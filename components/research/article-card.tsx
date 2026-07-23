@@ -1,0 +1,7 @@
+import Link from "next/link";
+import { formatDate } from "@/lib/sample-data";
+import type { ResearchArticleSummary } from "@/lib/types";
+
+export function ArticleCard({ article, compact = false }: { article: ResearchArticleSummary; compact?: boolean }) {
+  return <article className={`group border-t border-line transition-colors hover:bg-white ${compact ? "px-1 py-5" : "px-4 py-8 sm:px-6"}`}><div className="flex flex-wrap items-center gap-3 text-[9px] font-bold uppercase tracking-[0.12em] text-slate"><span className="text-accent">{article.category}</span><span aria-hidden="true">·</span><span>{formatDate(article.publicationDate)}</span><span aria-hidden="true">·</span><span>{article.readingTime} min</span>{article.isSample ? <span className="tag">Sample</span> : null}</div><h3 className={`${compact ? "mt-3 text-xl" : "mt-5 text-3xl"} font-serif font-semibold leading-[1.15] tracking-[-0.025em] text-navy`}><Link className="underline decoration-transparent underline-offset-4 group-hover:decoration-accent" href={`/research/${article.slug}`}>{article.title}</Link></h3>{compact ? null : <><p className="mt-4 max-w-3xl font-serif text-lg leading-7 text-navy">{article.thesis}</p><p className="mt-4 max-w-3xl text-sm leading-7 text-slate">{article.summary}</p><Link aria-label={`Read ${article.title}`} className="mt-5 inline-block text-[10px] font-bold uppercase tracking-[0.13em] text-accent" href={`/research/${article.slug}`}>Read report →</Link></>}</article>;
+}

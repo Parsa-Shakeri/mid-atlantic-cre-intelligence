@@ -1,0 +1,91 @@
+@import "tailwindcss";
+
+@theme inline {
+  --color-paper: #f6f3ed;
+  --color-white: #fffefa;
+  --color-navy: #0b2239;
+  --color-ink: #172433;
+  --color-slate: #596878;
+  --color-line: #d4d8d8;
+  --color-mist: #e9edeb;
+  --color-accent: #a44f2f;
+  --color-accent-soft: #eee0d8;
+  --font-sans: "Aptos", "Segoe UI", Arial, Helvetica, sans-serif;
+  --font-serif: Charter, "Iowan Old Style", "Palatino Linotype", Georgia, serif;
+}
+
+* { box-sizing: border-box; }
+html { scroll-behavior: smooth; }
+body { margin: 0; background: var(--color-paper); color: var(--color-ink); font-family: var(--font-sans); -webkit-font-smoothing: antialiased; }
+a, button { outline-offset: 4px; }
+:focus-visible { outline: 2px solid var(--color-accent); }
+::selection { background: #d9b9a8; color: var(--color-navy); }
+
+@media (max-width: 640px) {
+  .filter-input, .admin-input { font-size: 16px; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html { scroll-behavior: auto; }
+  *, *::before, *::after { scroll-behavior: auto !important; transition-duration: 0.01ms !important; animation-duration: 0.01ms !important; animation-iteration-count: 1 !important; }
+}
+
+@layer components {
+  .eyebrow { @apply text-[10px] font-bold uppercase tracking-[0.2em] text-accent; }
+  .tag { @apply inline-flex items-center border border-line bg-white px-2.5 py-1.5 text-[9px] font-bold uppercase tracking-[0.12em] text-slate; }
+  .panel { @apply border border-line bg-white shadow-[0_12px_34px_rgba(11,34,57,0.055)]; }
+  .nav-link { @apply relative py-2 text-[11px] font-bold uppercase tracking-[0.08em] text-slate transition-colors hover:text-navy after:absolute after:inset-x-0 after:-bottom-1 after:h-0.5 after:origin-left after:scale-x-0 after:bg-accent after:transition-transform hover:after:scale-x-100; }
+  .menu-button { @apply border border-navy bg-white px-3.5 py-2.5 text-[11px] font-bold uppercase tracking-wider text-navy; }
+  .footer-title { @apply text-[10px] font-bold uppercase tracking-[0.18em] text-white; }
+  .button-primary { @apply inline-flex min-h-12 items-center justify-center bg-navy px-6 py-3 text-sm font-bold text-white shadow-[0_7px_18px_rgba(11,34,57,0.16)] transition-[transform,background-color] hover:-translate-y-0.5 hover:bg-[#163a59]; }
+  .button-secondary { @apply inline-flex min-h-12 items-center justify-center border border-navy/25 bg-transparent px-6 py-3 text-sm font-bold text-navy transition-[transform,background-color,border-color] hover:-translate-y-0.5 hover:border-navy hover:bg-white; }
+  .button-on-dark { @apply border-white/35 text-white hover:border-white hover:bg-white/10; }
+  .research-card { @apply relative flex h-full flex-col overflow-hidden border border-line bg-white p-6 shadow-[0_16px_36px_rgba(11,34,57,0.06)] transition-[transform,box-shadow,border-color] before:absolute before:inset-x-0 before:top-0 before:h-1 before:bg-accent hover:-translate-y-1 hover:border-navy/25 hover:shadow-[0_22px_45px_rgba(11,34,57,0.1)]; }
+  .filter-label { @apply grid gap-2 text-[10px] font-bold uppercase tracking-[0.09em] text-slate; }
+  .filter-input { @apply min-h-12 w-full border border-line bg-white px-3.5 py-2 text-sm font-normal normal-case tracking-normal text-navy shadow-[0_2px_7px_rgba(11,34,57,0.025)] outline-none transition-[border-color,box-shadow] focus:border-accent focus:shadow-[0_0_0_3px_rgba(164,79,47,0.12)]; }
+  .admin-field { @apply grid gap-2 text-xs font-semibold text-navy; }
+  .admin-input { @apply min-h-11 w-full border border-line bg-white px-3 py-2 text-sm font-normal text-ink shadow-[0_1px_3px_rgba(11,34,57,0.035)] outline-none transition-[border-color,box-shadow] placeholder:text-slate/70 focus:border-accent focus:shadow-[0_0_0_3px_rgba(164,79,47,0.1)]; }
+  .admin-table { @apply w-full min-w-[760px] border-collapse text-left text-sm; }
+  .admin-table th { @apply border-b border-line bg-navy px-4 py-3 text-[9px] font-bold uppercase tracking-[0.11em] text-white/70; }
+  .admin-table td { @apply border-b border-line px-4 py-4 align-top text-slate; }
+  .admin-table tbody tr { @apply transition-colors hover:bg-mist/40; }
+  .admin-shell { @apply min-h-screen border-t-4 border-accent bg-[#edf0ef]; }
+  .admin-sidebar { @apply overflow-hidden border border-navy/15 bg-navy shadow-[0_18px_40px_rgba(11,34,57,0.13)]; }
+  .admin-nav-link { @apply flex items-center justify-between border-b border-white/10 px-4 py-3.5 text-xs font-semibold text-white/65 transition-[background-color,color,padding] last:border-b-0 hover:bg-white/10 hover:pl-5 hover:text-white; }
+  .admin-nav-link-active { @apply border-l-[3px] border-l-accent bg-white/10 pl-[13px] text-white; }
+  .admin-content-card { @apply border border-line bg-white p-5 shadow-[0_12px_34px_rgba(11,34,57,0.055)]; }
+  .category-link { @apply flex items-center justify-between gap-4 border-b border-line py-3 text-sm text-slate transition-[color,padding] hover:pl-1 hover:text-navy; }
+  .category-link-active { @apply font-semibold text-navy; }
+  .prose-section h2 { @apply font-serif text-3xl font-semibold tracking-tight text-navy; }
+  .prose-section p { @apply mt-4 max-w-3xl text-base leading-7 text-slate; }
+  .prose-section ul { @apply mt-5 grid max-w-3xl gap-3 text-sm leading-6 text-slate; }
+  .prose-section li { @apply border-l-2 border-line pl-4; }
+  .article-copy { @apply scroll-mt-32; }
+  .article-copy h2 { @apply font-serif text-3xl font-semibold tracking-tight text-navy; }
+  .article-copy p { @apply mt-5 text-[17px] leading-8 text-slate; }
+  .home-hero { @apply relative overflow-hidden bg-navy text-white; }
+  .home-hero::before { content: "MD  /  DC  /  VA"; position: absolute; right: -1rem; bottom: -1rem; color: rgba(255,255,255,0.035); font-family: var(--font-serif); font-size: clamp(4.5rem, 11vw, 10rem); font-weight: 700; letter-spacing: -0.05em; white-space: nowrap; pointer-events: none; }
+  .hero-brief { @apply relative border border-white/20 bg-[#102d48] p-6 shadow-[0_24px_70px_rgba(0,0,0,0.22)] sm:p-8; }
+  .hero-brief::before { content: ""; position: absolute; inset: -1px auto -1px -1px; width: 4px; background: var(--color-accent); }
+  .page-hero { @apply relative overflow-hidden border-b border-white/10 bg-navy text-white; }
+  .page-hero::after { content: "MACRE"; position: absolute; right: -1.5rem; top: 50%; transform: translateY(-50%); color: rgba(255,255,255,0.025); font-family: var(--font-serif); font-size: clamp(7rem, 18vw, 15rem); font-weight: 700; letter-spacing: -0.08em; pointer-events: none; }
+  .detail-hero { @apply relative overflow-hidden border-b border-white/10 bg-navy text-white; }
+  .detail-hero::after { content: "RESEARCH RECORD"; position: absolute; right: -1rem; bottom: -1.2rem; color: rgba(255,255,255,0.026); font-family: var(--font-serif); font-size: clamp(4rem, 10vw, 8rem); font-weight: 700; letter-spacing: -0.06em; white-space: nowrap; pointer-events: none; }
+  .detail-hero-card { @apply relative border border-white/20 bg-[#102d48] p-6 shadow-[0_20px_56px_rgba(0,0,0,0.2)]; }
+  .detail-hero-card::before { content: ""; position: absolute; inset: -1px auto -1px -1px; width: 4px; background: var(--color-accent); }
+  .back-link-dark { @apply relative inline-flex items-center gap-2 text-[10px] font-bold uppercase tracking-[0.12em] text-white/65 transition-colors hover:text-white; }
+  .state-panel { @apply relative mx-auto max-w-3xl overflow-hidden border border-navy/15 bg-white p-8 text-center shadow-[0_22px_58px_rgba(11,34,57,0.09)] sm:p-12; }
+  .state-panel::before { content: ""; position: absolute; inset: 0 0 auto; height: 5px; background: var(--color-accent); }
+  .loading-bar { @apply relative overflow-hidden border border-line bg-white shadow-[0_8px_22px_rgba(11,34,57,0.04)]; }
+  .loading-bar::after { content: ""; position: absolute; inset: 0; background: linear-gradient(100deg, transparent 20%, rgba(233,237,235,0.9) 50%, transparent 80%); animation: loading-sweep 1.5s ease-in-out infinite; }
+  .section-rule { @apply flex items-center gap-3 text-[10px] font-bold uppercase tracking-[0.16em] text-slate before:h-px before:w-8 before:bg-accent; }
+  .market-section { @apply border-y border-white/10 bg-navy text-white; }
+  .market-section .eyebrow { @apply text-[#d98b68]; }
+  .market-section h2 { @apply text-white; }
+  .market-section .section-description { @apply text-[#b9c5ce]; }
+}
+
+@keyframes loading-sweep {
+  from { transform: translateX(-100%); }
+  to { transform: translateX(100%); }
+}

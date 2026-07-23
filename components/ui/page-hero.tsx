@@ -1,0 +1,5 @@
+import { Container } from "@/components/ui/container";
+
+export function PageHero({ eyebrow, title, description, disclosure }: { eyebrow: string; title: string; description: string; disclosure?: string }) {
+  return <section className="page-hero"><Container className="relative grid gap-10 py-16 sm:py-20 lg:grid-cols-[1fr_0.48fr] lg:items-end lg:py-24"><div><p className="flex items-center gap-3 text-[10px] font-bold uppercase tracking-[0.2em] text-[#d98b68] before:h-px before:w-9 before:bg-[#d98b68]">{eyebrow}</p><h1 className="mt-6 max-w-4xl font-serif text-5xl font-semibold leading-[1] tracking-[-0.045em] text-white sm:text-6xl">{title}</h1><p className="mt-6 max-w-3xl text-lg leading-8 text-[#b9c5ce]">{description}</p></div>{disclosure ? <aside className="border-l-2 border-accent pl-5"><p className="text-[9px] font-bold uppercase tracking-[0.16em] text-white/45">Research note</p><p className="mt-3 text-sm leading-6 text-[#b9c5ce]">{disclosure}</p></aside> : null}</Container></section>;
+}
