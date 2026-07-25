@@ -28,6 +28,22 @@ function ensurePositive(value: number | null, label: string, required = false) {
   if (value !== null && (!Number.isFinite(value) || value <= 0)) throw new Error(`${label} must be positive.`);
 }
 
+function revalidatePropertyData() {
+  revalidatePath("/");
+  revalidatePath("/properties", "layout");
+  revalidatePath("/dashboard");
+}
+
+function revalidateResearchData() {
+  revalidatePath("/");
+  revalidatePath("/research", "layout");
+}
+
+function revalidateSourcePages() {
+  revalidatePath("/properties", "layout");
+  revalidatePath("/research", "layout");
+}
+
 export async function savePropertyAction(formData: FormData) {
   const { client } = await requireAdmin();
   const id = text(formData, "id");
@@ -57,7 +73,7 @@ export async function savePropertyAction(formData: FormData) {
     const result = id ? await client.from("properties").update(payload).eq("id", id) : await client.from("properties").insert(payload);
     if (result.error) throw result.error;
   } catch (error) { fail("/admin/properties", error instanceof Error ? error.message : "Property could not be saved."); }
-  revalidatePath("/admin"); revalidatePath("/admin/properties"); revalidatePath("/properties");
+  revalidatePath("/admin"); revalidatePath("/admin/properties"); revalidatePropertyData();
   succeed("/admin/properties", id ? "Property updated." : "Property created.");
 }
 
@@ -66,7 +82,7 @@ export async function deletePropertyAction(formData: FormData) {
   if (text(formData, "confirm") !== "DELETE") fail("/admin/properties", "Type DELETE to confirm property deletion.");
   const { error } = await client.from("properties").delete().eq("id", text(formData, "id"));
   if (error) fail("/admin/properties", error.message);
-  revalidatePath("/admin"); revalidatePath("/admin/properties"); revalidatePath("/properties");
+  revalidatePath("/admin"); revalidatePath("/admin/properties"); revalidatePropertyData();
   succeed("/admin/properties", "Property and related transactions were deleted.");
 }
 
@@ -93,7 +109,7 @@ export async function saveTransactionAction(formData: FormData) {
     const result = id ? await client.from("transactions").update(payload).eq("id", id) : await client.from("transactions").insert(payload);
     if (result.error) throw result.error;
   } catch (error) { fail("/admin/transactions", error instanceof Error ? error.message : "Transaction could not be saved."); }
-  revalidatePath("/admin"); revalidatePath("/admin/transactions"); revalidatePath("/properties"); revalidatePath("/dashboard");
+  revalidatePath("/admin"); revalidatePath("/admin/transactions"); revalidatePropertyData();
   succeed("/admin/transactions", id ? "Transaction updated." : "Transaction created.");
 }
 
@@ -102,7 +118,7 @@ export async function deleteTransactionAction(formData: FormData) {
   if (text(formData, "confirm") !== "DELETE") fail("/admin/transactions", "Type DELETE to confirm transaction deletion.");
   const { error } = await client.from("transactions").delete().eq("id", text(formData, "id"));
   if (error) fail("/admin/transactions", error.message);
-  revalidatePath("/admin"); revalidatePath("/admin/transactions"); revalidatePath("/dashboard");
+  revalidatePath("/admin"); revalidatePath("/admin/transactions"); revalidatePropertyData();
   succeed("/admin/transactions", "Transaction deleted.");
 }
 
@@ -130,7 +146,7 @@ export async function saveArticleAction(formData: FormData) {
     const result = id ? await client.from("articles").update(payload).eq("id", id) : await client.from("articles").insert(payload);
     if (result.error) throw result.error;
   } catch (error) { fail("/admin/articles", error instanceof Error ? error.message : "Article could not be saved."); }
-  revalidatePath("/admin"); revalidatePath("/admin/articles"); revalidatePath("/research");
+  revalidatePath("/admin"); revalidatePath("/admin/articles"); revalidateResearchData();
   succeed("/admin/articles", id ? "Article updated." : "Article created.");
 }
 
@@ -139,7 +155,7 @@ export async function deleteArticleAction(formData: FormData) {
   if (text(formData, "confirm") !== "DELETE") fail("/admin/articles", "Type DELETE to confirm article deletion.");
   const { error } = await client.from("articles").delete().eq("id", text(formData, "id"));
   if (error) fail("/admin/articles", error.message);
-  revalidatePath("/admin"); revalidatePath("/admin/articles"); revalidatePath("/research");
+  revalidatePath("/admin"); revalidatePath("/admin/articles"); revalidateResearchData();
   succeed("/admin/articles", "Article deleted.");
 }
 
@@ -160,7 +176,7 @@ export async function saveSourceAction(formData: FormData) {
     const result = id ? await client.from("sources").update(payload).eq("id", id) : await client.from("sources").insert(payload);
     if (result.error) throw result.error;
   } catch (error) { fail("/admin/sources", error instanceof Error ? error.message : "Source could not be saved."); }
-  revalidatePath("/admin"); revalidatePath("/admin/sources"); revalidatePath("/properties"); revalidatePath("/research");
+  revalidatePath("/admin"); revalidatePath("/admin/sources"); revalidateSourcePages();
   succeed("/admin/sources", id ? "Source updated." : "Source attached.");
 }
 
@@ -169,7 +185,7 @@ export async function deleteSourceAction(formData: FormData) {
   if (text(formData, "confirm") !== "DELETE") fail("/admin/sources", "Type DELETE to confirm source deletion.");
   const { error } = await client.from("sources").delete().eq("id", text(formData, "id"));
   if (error) fail("/admin/sources", error.message);
-  revalidatePath("/admin"); revalidatePath("/admin/sources");
+  revalidatePath("/admin"); revalidatePath("/admin/sources"); revalidateSourcePages();
   succeed("/admin/sources", "Source deleted.");
 }
 
@@ -192,6 +208,6 @@ export async function importCsvRowsAction(formData: FormData) {
     const { error } = await client.rpc("import_property_transactions", { import_rows: rows as unknown as Json });
     if (error) throw error;
   } catch (error) { fail("/admin/import", error instanceof Error ? error.message : "CSV import failed."); }
-  revalidatePath("/admin"); revalidatePath("/admin/properties"); revalidatePath("/admin/transactions"); revalidatePath("/properties"); revalidatePath("/dashboard");
+  revalidatePath("/admin"); revalidatePath("/admin/properties"); revalidatePath("/admin/transactions"); revalidatePropertyData();
   succeed("/admin/import", `${rows.length} rows imported atomically.`);
 }
