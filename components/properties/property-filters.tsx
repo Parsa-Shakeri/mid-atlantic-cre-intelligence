@@ -1,10 +1,5 @@
 import Link from "next/link";
-import { PROPERTY_TYPES, US_STATES, VERIFICATION_STATUSES, type PropertyQuery } from "@/lib/types";
-import { sampleProperties } from "@/lib/sample-data";
-
-const unique = (values: string[]) => [...new Set(values)].toSorted();
-const counties = unique(sampleProperties.map((property) => property.county));
-const cities = unique(sampleProperties.map((property) => property.city));
+import { PROPERTY_TYPES, US_STATES, VERIFICATION_STATUSES, type PropertyFilterOptions, type PropertyQuery } from "@/lib/types";
 
 function SelectField({ label, name, value, options }: { label: string; name: string; value: string; options: readonly string[] }) {
   return <label className="filter-label">{label}<select className="filter-input" name={name} defaultValue={value}><option value="">All</option>{options.map((option) => <option key={option} value={option}>{option}</option>)}</select></label>;
@@ -14,7 +9,7 @@ function NumberField({ label, name, value, placeholder }: { label: string; name:
   return <label className="filter-label">{label}<input className="filter-input" type="number" min="0" step="any" name={name} defaultValue={value ?? ""} placeholder={placeholder} /></label>;
 }
 
-export function PropertyFilters({ query }: { query: PropertyQuery }) {
+export function PropertyFilters({ query, options }: { query: PropertyQuery; options: PropertyFilterOptions }) {
   return (
     <form action="/properties" className="panel p-5 sm:p-6" aria-label="Filter property transactions">
       <div className="grid gap-4 lg:grid-cols-[2fr_0.7fr_1fr_1fr_auto] lg:items-end">
@@ -27,9 +22,9 @@ export function PropertyFilters({ query }: { query: PropertyQuery }) {
       <details className="mt-5 border-t border-line pt-4">
         <summary className="cursor-pointer text-xs font-semibold uppercase tracking-[0.1em] text-navy">Advanced filters</summary>
         <div className="mt-5 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
-          <SelectField label="County" name="county" value={query.county} options={counties} />
-          <SelectField label="City" name="city" value={query.city} options={cities} />
-          <label className="filter-label">Sale year<select className="filter-input" name="saleYear" defaultValue={query.saleYear}><option value="">All</option>{[2025, 2024, 2023, 2022, 2021, 2020, 2019, 2018].map((year) => <option key={year} value={year}>{year}</option>)}</select></label>
+          <SelectField label="County" name="county" value={query.county} options={options.counties} />
+          <SelectField label="City" name="city" value={query.city} options={options.cities} />
+          <SelectField label="Sale year" name="saleYear" value={query.saleYear} options={options.saleYears} />
           <SelectField label="Verification" name="verificationStatus" value={query.verificationStatus} options={VERIFICATION_STATUSES} />
           <NumberField label="Minimum sale price" name="priceMin" value={query.priceMin} placeholder="0" />
           <NumberField label="Maximum sale price" name="priceMax" value={query.priceMax} placeholder="No maximum" />
