@@ -1,9 +1,9 @@
 import "server-only";
 import type { Database } from "@/lib/supabase/database.types";
 import { createPublicSupabaseClient } from "@/lib/supabase/server";
-import { filterAndSortProperties } from "@/lib/property-utils";
+import { buildPropertyFilterOptions, filterAndSortProperties } from "@/lib/property-utils";
 import { sampleProperties, samplePropertyList, sampleSummary } from "@/lib/sample-data";
-import type { PaginatedProperties, PropertyListItem, PropertyQuery, PropertyRecord, SourceRecord, SummaryMetrics, TransactionRecord } from "@/lib/types";
+import type { PaginatedProperties, PropertyFilterOptions, PropertyListItem, PropertyQuery, PropertyRecord, SourceRecord, SummaryMetrics, TransactionRecord } from "@/lib/types";
 
 type ListRow = Database["public"]["Views"]["property_transaction_records"]["Row"];
 type PropertyRow = Database["public"]["Tables"]["properties"]["Row"];
@@ -26,6 +26,26 @@ function fallbackProperties(query: PropertyQuery): PaginatedProperties {
   const filtered = filterAndSortProperties(samplePropertyList, query);
   const start = (query.page - 1) * query.pageSize;
   return { records: filtered.slice(start, start + query.pageSize), total: filtered.length, page: query.page, pageSize: query.pageSize, source: "sample" };
+}
+
+const sampleFilterOptions = buildPropertyFilterOptions(samplePropertyList);
+
+export async function getPropertyFilterOptions(): Promise<PropertyFilterOptions> {
+  const client = createPublicSupabaseClient();
+  if (!client) return sampleFilterOptions;
+
+  const { data, error } = await client
+    .from("property_transaction_records")
+    .select("city, county, sale_date")
+    .limit(5000);
+
+  if (error) return sampleFilterOptions;
+
+  return buildPropertyFilterOptions((data ?? []).map((record) => ({
+    city: record.city,
+    county: record.county,
+    saleDate: record.sale_date,
+  })));
 }
 
 export async function getProperties(query: PropertyQuery): Promise<PaginatedProperties> {

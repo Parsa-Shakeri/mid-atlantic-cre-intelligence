@@ -4,6 +4,7 @@ import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
 import { requireAdmin } from "@/lib/admin-auth";
 import { CSV_TARGET_FIELDS, generateSlug, mapAndValidateCsvRows, type CsvColumnMapping, type CsvImportRow } from "@/lib/csv-import";
+import { parseRelatedPropertyIds, parseResearchExhibitFields } from "@/lib/research-exhibit";
 import { PROPERTY_TYPES, RESEARCH_CATEGORIES, US_STATES, VERIFICATION_STATUSES, type CoveredState, type PropertyType, type ResearchCategory, type VerificationStatus } from "@/lib/types";
 import type { Database, Json } from "@/lib/supabase/database.types";
 
@@ -17,8 +18,10 @@ const nullableText = (formData: FormData, key: string) => text(formData, key) ||
 const nullableNumber = (formData: FormData, key: string) => { const value = text(formData, key); return value ? Number(value) : null; };
 const lines = (value: string) => value.split(/\r?\n|;/).map((item) => item.trim()).filter(Boolean);
 const checkbox = (formData: FormData, key: string) => formData.get(key) === "on";
-const fail = (path: string, message: string): never => redirect(`${path}?error=${encodeURIComponent(message)}`);
-const succeed = (path: string, message: string): never => redirect(`${path}?status=${encodeURIComponent(message)}`);
+const withMessage = (path: string, key: "error" | "status", message: string) =>
+  `${path}${path.includes("?") ? "&" : "?"}${key}=${encodeURIComponent(message)}`;
+const fail = (path: string, message: string): never => redirect(withMessage(path, "error", message));
+const succeed = (path: string, message: string): never => redirect(withMessage(path, "status", message));
 const validDate = (value: string) => /^\d{4}-\d{2}-\d{2}$/.test(value) && !Number.isNaN(Date.parse(`${value}T00:00:00Z`));
 const today = () => new Date().toISOString().slice(0, 10);
 const validHttpUrl = (value: string) => { try { return ["http:", "https:"].includes(new URL(value).protocol); } catch { return false; } };
@@ -26,6 +29,22 @@ const validHttpUrl = (value: string) => { try { return ["http:", "https:"].inclu
 function ensurePositive(value: number | null, label: string, required = false) {
   if (required && value === null) throw new Error(`${label} is required.`);
   if (value !== null && (!Number.isFinite(value) || value <= 0)) throw new Error(`${label} must be positive.`);
+}
+
+function revalidatePropertyData() {
+  revalidatePath("/");
+  revalidatePath("/properties", "layout");
+  revalidatePath("/dashboard");
+}
+
+function revalidateResearchData() {
+  revalidatePath("/");
+  revalidatePath("/research", "layout");
+}
+
+function revalidateSourcePages() {
+  revalidatePath("/properties", "layout");
+  revalidatePath("/research", "layout");
 }
 
 export async function savePropertyAction(formData: FormData) {
@@ -57,7 +76,7 @@ export async function savePropertyAction(formData: FormData) {
     const result = id ? await client.from("properties").update(payload).eq("id", id) : await client.from("properties").insert(payload);
     if (result.error) throw result.error;
   } catch (error) { fail("/admin/properties", error instanceof Error ? error.message : "Property could not be saved."); }
-  revalidatePath("/admin"); revalidatePath("/admin/properties"); revalidatePath("/properties");
+  revalidatePath("/admin"); revalidatePath("/admin/properties"); revalidatePropertyData();
   succeed("/admin/properties", id ? "Property updated." : "Property created.");
 }
 
@@ -66,7 +85,7 @@ export async function deletePropertyAction(formData: FormData) {
   if (text(formData, "confirm") !== "DELETE") fail("/admin/properties", "Type DELETE to confirm property deletion.");
   const { error } = await client.from("properties").delete().eq("id", text(formData, "id"));
   if (error) fail("/admin/properties", error.message);
-  revalidatePath("/admin"); revalidatePath("/admin/properties"); revalidatePath("/properties");
+  revalidatePath("/admin"); revalidatePath("/admin/properties"); revalidatePropertyData();
   succeed("/admin/properties", "Property and related transactions were deleted.");
 }
 
@@ -93,7 +112,7 @@ export async function saveTransactionAction(formData: FormData) {
     const result = id ? await client.from("transactions").update(payload).eq("id", id) : await client.from("transactions").insert(payload);
     if (result.error) throw result.error;
   } catch (error) { fail("/admin/transactions", error instanceof Error ? error.message : "Transaction could not be saved."); }
-  revalidatePath("/admin"); revalidatePath("/admin/transactions"); revalidatePath("/properties"); revalidatePath("/dashboard");
+  revalidatePath("/admin"); revalidatePath("/admin/transactions"); revalidatePropertyData();
   succeed("/admin/transactions", id ? "Transaction updated." : "Transaction created.");
 }
 
@@ -102,7 +121,7 @@ export async function deleteTransactionAction(formData: FormData) {
   if (text(formData, "confirm") !== "DELETE") fail("/admin/transactions", "Type DELETE to confirm transaction deletion.");
   const { error } = await client.from("transactions").delete().eq("id", text(formData, "id"));
   if (error) fail("/admin/transactions", error.message);
-  revalidatePath("/admin"); revalidatePath("/admin/transactions"); revalidatePath("/dashboard");
+  revalidatePath("/admin"); revalidatePath("/admin/transactions"); revalidatePropertyData();
   succeed("/admin/transactions", "Transaction deleted.");
 }
 
@@ -112,6 +131,8 @@ export async function saveArticleAction(formData: FormData) {
   const title = text(formData, "title");
   const category = text(formData, "category") as ResearchCategory;
   const status = text(formData, "status") as "draft" | "published" | "archived";
+  let articleId = id;
+  let createdArticle = false;
   try {
     if (!title || !text(formData, "thesis") || !text(formData, "summary") || !text(formData, "body") || !text(formData, "author")) throw new Error("Complete all required article fields.");
     if (!RESEARCH_CATEGORIES.includes(category)) throw new Error("Select a controlled research category.");
@@ -123,14 +144,50 @@ export async function saveArticleAction(formData: FormData) {
     const featuredImage = nullableText(formData, "featured_image");
     if (featuredImage && !validHttpUrl(featuredImage)) throw new Error("Featured image must use a valid http or https URL.");
     ensurePositive(nullableNumber(formData, "reading_time"), "Reading time", true);
+    const exhibit = parseResearchExhibitFields({
+      title: text(formData, "exhibit_title"),
+      description: text(formData, "exhibit_description"),
+      columns: text(formData, "exhibit_columns"),
+      rows: text(formData, "exhibit_rows"),
+      note: text(formData, "exhibit_note"),
+    });
+    const relatedPropertyIds = parseRelatedPropertyIds(formData.getAll("property_ids"));
+    if (relatedPropertyIds.length) {
+      const { data: matchedProperties, error: propertiesError } = await client.from("properties").select("id").in("id", relatedPropertyIds);
+      if (propertiesError) throw propertiesError;
+      if ((matchedProperties ?? []).length !== relatedPropertyIds.length) throw new Error("One or more related properties no longer exist.");
+    }
     const payload: ArticleInsert = { slug: text(formData, "slug") || generateSlug(title), title, thesis: text(formData, "thesis"), summary: text(formData, "summary"),
       executive_summary: lines(text(formData, "executive_summary")), body: text(formData, "body"), category, featured_image: featuredImage,
       publication_date: publicationDate, status, featured: checkbox(formData, "featured"), reading_time: nullableNumber(formData, "reading_time") ?? 1,
-      author: text(formData, "author"), limitations: lines(text(formData, "limitations")), is_sample: checkbox(formData, "is_sample") };
-    const result = id ? await client.from("articles").update(payload).eq("id", id) : await client.from("articles").insert(payload);
+      author: text(formData, "author"), limitations: lines(text(formData, "limitations")), exhibit: exhibit as Json | null,
+      is_sample: checkbox(formData, "is_sample") };
+    const result = id
+      ? await client.from("articles").update(payload).eq("id", id).select("id").single()
+      : await client.from("articles").insert(payload).select("id").single();
     if (result.error) throw result.error;
-  } catch (error) { fail("/admin/articles", error instanceof Error ? error.message : "Article could not be saved."); }
-  revalidatePath("/admin"); revalidatePath("/admin/articles"); revalidatePath("/research");
+    articleId = result.data.id;
+    createdArticle = !id;
+
+    const { data: existingLinks, error: linksError } = await client.from("article_properties").select("property_id").eq("article_id", articleId);
+    if (linksError) throw linksError;
+    const existingIds = new Set((existingLinks ?? []).map((link) => link.property_id));
+    const selectedIds = new Set(relatedPropertyIds);
+    const toAdd = relatedPropertyIds.filter((propertyId) => !existingIds.has(propertyId));
+    const toRemove = [...existingIds].filter((propertyId) => !selectedIds.has(propertyId));
+    if (toAdd.length) {
+      const { error } = await client.from("article_properties").insert(toAdd.map((propertyId) => ({ article_id: articleId, property_id: propertyId })));
+      if (error) throw error;
+    }
+    if (toRemove.length) {
+      const { error } = await client.from("article_properties").delete().eq("article_id", articleId).in("property_id", toRemove);
+      if (error) throw error;
+    }
+  } catch (error) {
+    if (createdArticle && articleId) await client.from("articles").delete().eq("id", articleId);
+    fail(id ? `/admin/articles?edit=${id}` : "/admin/articles", error instanceof Error ? error.message : "Article could not be saved.");
+  }
+  revalidatePath("/admin"); revalidatePath("/admin/articles"); revalidateResearchData();
   succeed("/admin/articles", id ? "Article updated." : "Article created.");
 }
 
@@ -139,7 +196,7 @@ export async function deleteArticleAction(formData: FormData) {
   if (text(formData, "confirm") !== "DELETE") fail("/admin/articles", "Type DELETE to confirm article deletion.");
   const { error } = await client.from("articles").delete().eq("id", text(formData, "id"));
   if (error) fail("/admin/articles", error.message);
-  revalidatePath("/admin"); revalidatePath("/admin/articles"); revalidatePath("/research");
+  revalidatePath("/admin"); revalidatePath("/admin/articles"); revalidateResearchData();
   succeed("/admin/articles", "Article deleted.");
 }
 
@@ -160,7 +217,7 @@ export async function saveSourceAction(formData: FormData) {
     const result = id ? await client.from("sources").update(payload).eq("id", id) : await client.from("sources").insert(payload);
     if (result.error) throw result.error;
   } catch (error) { fail("/admin/sources", error instanceof Error ? error.message : "Source could not be saved."); }
-  revalidatePath("/admin"); revalidatePath("/admin/sources"); revalidatePath("/properties"); revalidatePath("/research");
+  revalidatePath("/admin"); revalidatePath("/admin/sources"); revalidateSourcePages();
   succeed("/admin/sources", id ? "Source updated." : "Source attached.");
 }
 
@@ -169,7 +226,7 @@ export async function deleteSourceAction(formData: FormData) {
   if (text(formData, "confirm") !== "DELETE") fail("/admin/sources", "Type DELETE to confirm source deletion.");
   const { error } = await client.from("sources").delete().eq("id", text(formData, "id"));
   if (error) fail("/admin/sources", error.message);
-  revalidatePath("/admin"); revalidatePath("/admin/sources");
+  revalidatePath("/admin"); revalidatePath("/admin/sources"); revalidateSourcePages();
   succeed("/admin/sources", "Source deleted.");
 }
 
@@ -192,6 +249,6 @@ export async function importCsvRowsAction(formData: FormData) {
     const { error } = await client.rpc("import_property_transactions", { import_rows: rows as unknown as Json });
     if (error) throw error;
   } catch (error) { fail("/admin/import", error instanceof Error ? error.message : "CSV import failed."); }
-  revalidatePath("/admin"); revalidatePath("/admin/properties"); revalidatePath("/admin/transactions"); revalidatePath("/properties"); revalidatePath("/dashboard");
+  revalidatePath("/admin"); revalidatePath("/admin/properties"); revalidatePath("/admin/transactions"); revalidatePropertyData();
   succeed("/admin/import", `${rows.length} rows imported atomically.`);
 }

@@ -118,6 +118,12 @@ export interface PropertyQuery {
   pageSize: number;
 }
 
+export interface PropertyFilterOptions {
+  counties: string[];
+  cities: string[];
+  saleYears: string[];
+}
+
 export interface PaginatedProperties {
   records: PropertyListItem[];
   total: number;

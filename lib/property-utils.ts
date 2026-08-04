@@ -1,8 +1,15 @@
-import { PROPERTY_TYPES, US_STATES, VERIFICATION_STATUSES, type CoveredState, type PropertyListItem, type PropertyQuery, type PropertySort, type PropertyType, type SortDirection, type VerificationStatus } from "./types";
+import { PROPERTY_TYPES, US_STATES, VERIFICATION_STATUSES, type CoveredState, type PropertyFilterOptions, type PropertyListItem, type PropertyQuery, type PropertySort, type PropertyType, type SortDirection, type VerificationStatus } from "./types";
 
 type SearchParams = Record<string, string | string[] | undefined>;
+type PropertyFilterRecord = {
+  city: string | null;
+  county: string | null;
+  saleDate: string | null;
+};
 
 const stringValue = (value: string | string[] | undefined) => Array.isArray(value) ? value[0] ?? "" : value ?? "";
+const uniqueStrings = (values: Array<string | null | undefined>) =>
+  [...new Set(values.filter((value): value is string => Boolean(value?.trim())).map((value) => value.trim()))].toSorted();
 const numberValue = (value: string | string[] | undefined) => {
   const raw = stringValue(value).trim();
   if (!raw) return null;
@@ -24,6 +31,19 @@ export function parsePropertyQuery(params: SearchParams): PropertyQuery {
     sizeMin: numberValue(params.sizeMin), sizeMax: numberValue(params.sizeMax), capRateMin: numberValue(params.capRateMin), capRateMax: numberValue(params.capRateMax),
     verificationStatus: VERIFICATION_STATUSES.includes(requestedStatus as VerificationStatus) ? requestedStatus as VerificationStatus : "", sort: sortOptions.includes(requestedSort) ? requestedSort : "sale_date",
     direction: requestedDirection === "asc" ? "asc" : "desc", page: Math.max(1, requestedPage), pageSize: 10,
+  };
+}
+
+export function buildPropertyFilterOptions(records: PropertyFilterRecord[]): PropertyFilterOptions {
+  const saleYears = uniqueStrings(records.map((record) => {
+    const year = record.saleDate?.slice(0, 4);
+    return year && /^\d{4}$/.test(year) ? year : null;
+  })).toSorted((a, b) => b.localeCompare(a));
+
+  return {
+    counties: uniqueStrings(records.map((record) => record.county)),
+    cities: uniqueStrings(records.map((record) => record.city)),
+    saleYears,
   };
 }
 

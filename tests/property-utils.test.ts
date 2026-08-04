@@ -1,6 +1,6 @@
 import { describe, expect, it } from "vitest";
 import { samplePropertyList } from "../lib/sample-data";
-import { calculateCapRate, calculatePricePerSquareFoot, filterAndSortProperties, parsePropertyQuery } from "../lib/property-utils";
+import { buildPropertyFilterOptions, calculateCapRate, calculatePricePerSquareFoot, filterAndSortProperties, parsePropertyQuery } from "../lib/property-utils";
 
 describe("property calculations", () => {
   it("calculates price per square foot", () => expect(calculatePricePerSquareFoot(1_000_000, 10_000)).toBe(100));
@@ -15,6 +15,21 @@ describe("property calculations", () => {
 });
 
 describe("property database queries", () => {
+  it("builds current location and sale-year options from stored records", () => {
+    const options = buildPropertyFilterOptions([
+      { city: "Rockville", county: "Montgomery County", saleDate: "2025-05-14" },
+      { city: "Falls Church", county: "Fairfax County", saleDate: "2026-05-22" },
+      { city: "Rockville", county: "Montgomery County", saleDate: "invalid" },
+      { city: null, county: "", saleDate: null },
+    ]);
+
+    expect(options).toEqual({
+      counties: ["Fairfax County", "Montgomery County"],
+      cities: ["Falls Church", "Rockville"],
+      saleYears: ["2026", "2025"],
+    });
+  });
+
   it("searches names, parties, and tenants", () => {
     const query = parsePropertyQuery({ search: "Example Logistics" });
     const result = filterAndSortProperties(samplePropertyList, query);

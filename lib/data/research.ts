@@ -1,8 +1,9 @@
 import "server-only";
-import type { Database, Json } from "@/lib/supabase/database.types";
+import type { Database } from "@/lib/supabase/database.types";
 import { createPublicSupabaseClient } from "@/lib/supabase/server";
+import { parseResearchExhibit } from "@/lib/research-exhibit";
 import { isResearchCategory, sampleResearchArticles, sampleResearchSummaries } from "@/lib/research-data";
-import type { RelatedPropertySummary, ResearchArticle, ResearchArticleSummary, ResearchExhibit, SourceRecord } from "@/lib/types";
+import type { RelatedPropertySummary, ResearchArticle, ResearchArticleSummary, SourceRecord } from "@/lib/types";
 
 type ArticleRow = Database["public"]["Tables"]["articles"]["Row"];
 type PropertyRow = Database["public"]["Tables"]["properties"]["Row"];
@@ -13,15 +14,6 @@ function mapSummary(row: ArticleRow): ResearchArticleSummary | null {
   return { id: row.id, slug: row.slug, title: row.title, thesis: row.thesis, summary: row.summary, category: row.category,
     publicationDate: row.publication_date, status: "published", featured: row.featured, readingTime: row.reading_time,
     author: row.author, isSample: row.is_sample };
-}
-
-function parseExhibit(value: Json | null): ResearchExhibit | null {
-  if (!value || Array.isArray(value) || typeof value !== "object") return null;
-  const valid = typeof value.title === "string" && typeof value.description === "string" && Array.isArray(value.columns)
-    && value.columns.every((column) => typeof column === "string") && Array.isArray(value.rows)
-    && value.rows.every((row) => Array.isArray(row) && row.every((cell) => typeof cell === "string")) && typeof value.note === "string";
-  if (!valid) return null;
-  return { title: String(value.title), description: String(value.description), columns: value.columns as string[], rows: value.rows as string[][], note: String(value.note) };
 }
 
 function mapSource(row: SourceRow): SourceRecord {
@@ -81,7 +73,7 @@ export async function getResearchArticleBySlug(slug: string): Promise<ResearchAr
   const summary = mapSummary(article);
   if (!summary) return fallback;
   return { ...summary, executiveSummary: article.executive_summary, body: article.body, limitations: article.limitations,
-    exhibit: parseExhibit(article.exhibit), sources: (sourcesResult.data ?? []).map(mapSource), relatedProperties,
+    exhibit: parseResearchExhibit(article.exhibit), sources: (sourcesResult.data ?? []).map(mapSource), relatedProperties,
     relatedArticles: relatedRows.map(mapSummary).filter((item): item is ResearchArticleSummary => item !== null),
     createdAt: article.created_at, updatedAt: article.updated_at };
 }
