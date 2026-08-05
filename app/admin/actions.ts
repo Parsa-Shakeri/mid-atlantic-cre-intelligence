@@ -5,6 +5,7 @@ import { redirect } from "next/navigation";
 import { requireAdmin } from "@/lib/admin-auth";
 import { CSV_TARGET_FIELDS, generateSlug, mapAndValidateCsvRows, type CsvColumnMapping, type CsvImportRow } from "@/lib/csv-import";
 import { parseRelatedPropertyIds, parseResearchExhibitFields } from "@/lib/research-exhibit";
+import { validateCoordinatePair } from "@/lib/property-validation";
 import { PROPERTY_TYPES, RESEARCH_CATEGORIES, US_STATES, VERIFICATION_STATUSES, type CoveredState, type PropertyType, type ResearchCategory, type VerificationStatus } from "@/lib/types";
 import type { Database, Json } from "@/lib/supabase/database.types";
 
@@ -54,6 +55,8 @@ export async function savePropertyAction(formData: FormData) {
   const propertyType = text(formData, "property_type") as PropertyType;
   const propertyName = text(formData, "property_name");
   const buildingSqFt = nullableNumber(formData, "building_sq_ft");
+  const latitude = nullableNumber(formData, "latitude");
+  const longitude = nullableNumber(formData, "longitude");
   try {
     if (!propertyName || !text(formData, "street_address") || !text(formData, "city") || !text(formData, "zip_code") || !text(formData, "county")) throw new Error("Complete all required property fields.");
     if (!US_STATES.includes(state)) throw new Error("State must be MD, DC, or VA.");
@@ -61,6 +64,7 @@ export async function savePropertyAction(formData: FormData) {
     ensurePositive(buildingSqFt, "Building square footage");
     ensurePositive(nullableNumber(formData, "lot_acres"), "Lot acreage");
     ensurePositive(nullableNumber(formData, "number_of_floors"), "Number of floors");
+    validateCoordinatePair(latitude, longitude);
     const parkingSpaces = nullableNumber(formData, "parking_spaces");
     if (parkingSpaces !== null && (!Number.isInteger(parkingSpaces) || parkingSpaces < 0)) throw new Error("Parking spaces must be a non-negative whole number.");
     const yearBuilt = nullableNumber(formData, "year_built");
@@ -70,7 +74,7 @@ export async function savePropertyAction(formData: FormData) {
     if (yearRenovated !== null && (!Number.isInteger(yearRenovated) || yearRenovated < (yearBuilt ?? 1700) || yearRenovated > currentYear)) throw new Error("Year renovated must be after year built and not in the future.");
     const payload: PropertyInsert = { slug: text(formData, "slug") || generateSlug(propertyName), property_name: propertyName,
       street_address: text(formData, "street_address"), city: text(formData, "city"), state, zip_code: text(formData, "zip_code"), county: text(formData, "county"),
-      property_type: propertyType, building_sq_ft: buildingSqFt, lot_acres: nullableNumber(formData, "lot_acres"), year_built: yearBuilt,
+      latitude, longitude, property_type: propertyType, building_sq_ft: buildingSqFt, lot_acres: nullableNumber(formData, "lot_acres"), year_built: yearBuilt,
       year_renovated: yearRenovated, number_of_floors: nullableNumber(formData, "number_of_floors"), parking_spaces: parkingSpaces,
       major_tenants: lines(text(formData, "major_tenants")), description: text(formData, "description"), lease_structure: nullableText(formData, "lease_structure"), is_sample: checkbox(formData, "is_sample") };
     const result = id ? await client.from("properties").update(payload).eq("id", id) : await client.from("properties").insert(payload);
