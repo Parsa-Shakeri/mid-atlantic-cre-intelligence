@@ -8,7 +8,7 @@ const methods = [
   ["Data collection", "Records will be assembled from public records, government databases, company announcements, credible journalism, regulatory filings, and other attributable public sources."],
   ["Verification criteria", "Material transaction details are evaluated source by source. Conflicting figures remain flagged until resolved; missing figures remain missing."],
   ["Calculations", "Price per square foot equals sale price divided by building square feet. Cap rate is calculated only when both verified NOI and property value are available."],
-  ["Missing-data treatment", "Unavailable values are displayed as unavailable, not inferred. Estimated, reported, and calculated values are labeled separately."],
+  ["Missing-data treatment", "Values absent from the public evidence are labeled as not publicly available and are never inferred. Estimated, reported, and calculated values are labeled separately."],
   ["Update frequency", "The production database is intended to be reviewed periodically, with access and verification dates preserved for each source."],
 ];
 const statuses = [["Verified", "Supported by at least two credible sources."], ["Single Source", "Supported by one credible source."], ["Estimated", "Derived from available figures and labeled as an estimate."], ["Incomplete", "One or more material fields are unavailable."]];
