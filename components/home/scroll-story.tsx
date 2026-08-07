@@ -11,8 +11,33 @@ const stages = [
   { number: "03", label: "Interpret", title: "Let the sample set the limit.", copy: "Calculate only what the evidence supports, show sample sizes, and separate reported figures from derived analysis.", icon: LineChart },
 ] as const;
 
-function StaticStory() {
-  return <section className="bg-ink py-20 text-white"><Container><p className="motion-kicker">Research workflow</p><div className="mt-10 grid gap-5 lg:grid-cols-3">{stages.map(({ number, label, title, copy, icon: Icon }) => <article className="border border-white/14 bg-white/[0.035] p-7" key={number}><Icon aria-hidden="true" className="size-5 text-copper" strokeWidth={1.6} /><p className="mt-8 font-mono text-xs text-white/40">{number} / {label}</p><h2 className="mt-4 font-serif text-3xl font-medium">{title}</h2><p className="mt-4 text-sm leading-7 text-white/58">{copy}</p></article>)}</div></Container></section>;
+function LinearStory({ animated = false, className = "" }: { animated?: boolean; className?: string }) {
+  return (
+    <section aria-labelledby="linear-workflow-title" className={`bg-ink py-20 text-white ${className}`}>
+      <Container>
+        <p className="motion-kicker">Research workflow</p>
+        <h2 className="mt-6 max-w-2xl font-serif text-4xl font-medium leading-[1.03] tracking-[-0.035em] sm:text-5xl" id="linear-workflow-title">Evidence moves before conclusions do.</h2>
+        <p className="mt-5 max-w-xl text-sm leading-7 text-white/52">Each record advances through the same three-stage process before it informs the public analysis.</p>
+        <div className="mt-10 grid gap-5 lg:grid-cols-3">
+          {stages.map(({ number, label, title, copy, icon: Icon }, index) => (
+            <motion.article
+              className="border border-white/14 bg-white/[0.035] p-7"
+              initial={animated ? { opacity: 0, y: 24 } : false}
+              key={number}
+              transition={{ delay: index * 0.06, duration: 0.55, ease: [0.22, 1, 0.36, 1] }}
+              viewport={{ amount: 0.22, once: true }}
+              whileInView={animated ? { opacity: 1, y: 0 } : undefined}
+            >
+              <Icon aria-hidden="true" className="size-5 text-copper" strokeWidth={1.6} />
+              <p className="mt-8 font-mono text-xs text-white/40">{number} / {label}</p>
+              <h3 className="mt-4 font-serif text-3xl font-medium">{title}</h3>
+              <p className="mt-4 text-sm leading-7 text-white/58">{copy}</p>
+            </motion.article>
+          ))}
+        </div>
+      </Container>
+    </section>
+  );
 }
 
 export function ScrollStory() {
@@ -42,13 +67,15 @@ export function ScrollStory() {
     });
   };
 
-  if (reduceMotion) return <StaticStory />;
+  if (reduceMotion) return <LinearStory />;
 
   const activeStage = stages[activeIndex];
   const ActiveIcon = activeStage.icon;
 
   return (
-    <section className="relative h-[280vh] bg-ink text-white" data-workflow-section ref={sectionRef}>
+    <>
+      <LinearStory animated className="lg:hidden" />
+      <section className="relative hidden h-[280vh] bg-ink text-white lg:block" data-workflow-section ref={sectionRef}>
       <div className="sticky top-[106px] flex min-h-[calc(100svh-106px)] items-center overflow-hidden py-10 sm:py-14">
         <Container className="grid gap-12 lg:grid-cols-[0.72fr_1.28fr] lg:items-center lg:gap-20">
           <div>
@@ -115,6 +142,7 @@ export function ScrollStory() {
           </div>
         </Container>
       </div>
-    </section>
+      </section>
+    </>
   );
 }
