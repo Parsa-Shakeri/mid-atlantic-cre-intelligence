@@ -4,14 +4,17 @@ An independent student research platform for commercial real estate transactions
 
 ## Technology
 
-- Next.js App Router, React, and strict TypeScript
+- Next.js 16 App Router with Turbopack, React 19, and strict TypeScript
 - Tailwind CSS
+- Motion for scroll-linked and in-view interaction
+- Lucide React icons
+- Self-hosted Geist, Geist Mono, and Newsreader through `next/font`
 - Supabase with PostgreSQL and Row Level Security
 - Recharts for accessible client-rendered charts
 - Vitest for domain and query tests
 - Vercel-compatible deployment
 
-Pages render on the server by default. Client components are limited to interactions that need browser state, such as the mobile menu and error retry control.
+Pages render on the server by default. Client components are limited to interactions that need browser state, including the mobile menu, error retry control, and progressive motion. The site honors `prefers-reduced-motion` with static equivalents.
 
 ## Project structure
 
@@ -21,6 +24,7 @@ app/properties/              Searchable database and property detail routes
 app/research/                Research library and article routes
 app/dashboard/               Filtered market dashboard
 components/home/             Homepage publication and data components
+components/motion/           Reduced-motion-aware reveal and scroll utilities
 components/properties/       Filters, results, badges, and value display
 components/research/         Article cards and accessible exhibits
 components/dashboard/        Filters, metrics, charts, and comparison tables
@@ -28,7 +32,7 @@ components/admin/            Protected forms, notices, and CSV review UI
 components/site/             Shared navigation and footer
 components/ui/               Design-system primitives
 data/                         Clearly labeled sample CSV
-docs/                         Production release checklist
+docs/                         Release checklist and design-source references
 lib/data/                     Server-side data access layer
 lib/supabase/                 Supabase client and generated-style types
 supabase/migrations/          Versioned PostgreSQL schema
@@ -153,7 +157,7 @@ The export at `/admin/export` produces a private, non-cached property/transactio
 
 ## SEO and indexing safety
 
-Global metadata includes canonical URLs, Open Graph and X cards, a generated application icon, a web manifest, organization and website structured data, and restrictive metadata for unavailable records. Published article pages include Article structured data.
+Global metadata includes canonical URLs, Open Graph and X cards generated with `next/og`, a generated application icon, a web manifest, organization and website structured data, and restrictive metadata for unavailable records. Published article pages include Article structured data.
 
 The sitemap reads real property and published-article slugs from Supabase and excludes fictional sample records. A production build without both Supabase public environment variables is marked `noindex` and disallowed in `robots.txt`; this prevents an accidentally deployed development dataset from appearing in search results.
 

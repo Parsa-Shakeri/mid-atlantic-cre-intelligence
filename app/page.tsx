@@ -1,36 +1,73 @@
 import Link from "next/link";
+import { ArrowRight, ShieldCheck } from "lucide-react";
+import { HomeHero } from "@/components/home/home-hero";
+import { MarketPreview } from "@/components/home/market-preview";
+import { MetricGrid } from "@/components/home/metric-grid";
+import { ResearchCard } from "@/components/home/research-card";
+import { ScrollStory } from "@/components/home/scroll-story";
+import { Reveal } from "@/components/motion/reveal";
 import { Container } from "@/components/ui/container";
 import { SectionHeading } from "@/components/ui/section-heading";
 import { TableScroll } from "@/components/ui/table-scroll";
-import { MetricGrid } from "@/components/home/metric-grid";
-import { ResearchCard } from "@/components/home/research-card";
-import { MarketPreview } from "@/components/home/market-preview";
-import { formatCurrency, formatDate } from "@/lib/sample-data";
 import { getRecentTransactions, getSummaryMetrics } from "@/lib/data/properties";
 import { getFeaturedResearch } from "@/lib/data/research";
-
-const coverageMarkets = [
-  ["01", "Maryland", "Statewide selected transactions"],
-  ["02", "Washington, D.C.", "District market activity"],
-  ["03", "Northern Virginia", "Core suburban submarkets"],
-] as const;
+import { formatCurrency, formatDate } from "@/lib/sample-data";
 
 export default async function HomePage() {
   const [summary, recentTransactions, featuredResearch] = await Promise.all([getSummaryMetrics(), getRecentTransactions(5), getFeaturedResearch(3)]);
   const usingSamples = summary.source === "sample";
+
   return <>
-    <section className="home-hero"><Container className="relative py-16 sm:py-20 lg:py-24"><div className="grid items-center gap-12 lg:grid-cols-[1.25fr_0.75fr] lg:gap-16"><div><p className="flex items-center gap-3 text-[10px] font-bold uppercase tracking-[0.2em] text-[#d98b68] before:h-px before:w-10 before:bg-[#d98b68]">Independent regional intelligence</p><h1 className="mt-7 max-w-4xl font-serif text-5xl font-semibold leading-[0.98] tracking-[-0.05em] text-white sm:text-6xl lg:text-[76px]">Commercial Real Estate,<br /><span className="text-[#d8e0e5]">Explained Through Local Data.</span></h1><p className="mt-8 max-w-2xl text-lg leading-8 text-[#c0cbd3]">Transaction-level research on pricing, cap rates, tenants, and market trends across Maryland, Washington, D.C., and Northern Virginia.</p><div className="mt-10 flex flex-col gap-3 sm:flex-row"><Link className="inline-flex min-h-12 items-center justify-center bg-accent px-6 py-3 text-sm font-bold text-white shadow-[0_10px_28px_rgba(0,0,0,0.22)] transition-transform hover:-translate-y-0.5" href="/properties">Explore the Database <span aria-hidden="true" className="ml-3">→</span></Link><Link className="button-secondary button-on-dark" href="/research">Read Latest Research</Link></div></div>
-      <aside aria-label="Regional research desk" className="hero-brief"><div className="flex items-center justify-between border-b border-white/15 pb-5"><div><p className="text-[9px] font-bold uppercase tracking-[0.18em] text-[#d98b68]">Regional research desk</p><h2 className="mt-2 font-serif text-2xl font-semibold">Coverage & evidence</h2></div><span className="border border-white/20 px-2 py-1 text-[8px] font-bold uppercase tracking-[0.12em] text-white/65">2026 edition</span></div><div className="mt-2">{coverageMarkets.map(([number, market, detail]) => <div className="grid grid-cols-[36px_1fr] gap-4 border-b border-white/10 py-5" key={market}><span className="font-serif text-xl text-white/30">{number}</span><div><p className="text-sm font-bold text-white">{market}</p><p className="mt-1 text-xs leading-5 text-[#9eafbc]">{detail}</p></div></div>)}</div><div className="mt-5 flex items-start gap-3"><span aria-hidden="true" className="mt-1.5 size-2 shrink-0 bg-accent" /><p className="text-xs leading-5 text-[#b9c5ce]">{usingSamples ? "Development edition: every displayed record and report is explicitly fictional." : "Public database edition: review record-level verification and sources before relying on a figure."}</p></div></aside></div>
-      <div className="mt-14 grid border-y border-white/15 text-[9px] font-bold uppercase tracking-[0.15em] text-white/55 sm:grid-cols-3"><p className="border-b border-white/15 py-4 sm:border-b-0 sm:border-r">Transaction-level records</p><p className="border-b border-white/15 py-4 sm:border-b-0 sm:border-r sm:px-5">Source-linked evidence</p><p className="py-4 sm:px-5">Transparent calculations</p></div></Container></section>
+    <HomeHero usingSamples={usingSamples} />
 
-    <section aria-labelledby="summary-title" className="relative z-10 -mt-1 pb-20"><Container><div className="flex flex-col gap-4 py-7 sm:flex-row sm:items-end sm:justify-between"><div><p className="eyebrow">{usingSamples ? "Development dataset" : "Public database"}</p><h2 className="mt-2 font-serif text-2xl font-semibold text-navy" id="summary-title">Current coverage at a glance</h2></div><p className="text-xs font-medium text-slate">All figures derived from stored records</p></div><MetricGrid summary={summary} /></Container></section>
+    <section aria-labelledby="summary-title" className="relative z-10 bg-paper pb-20 pt-9 lg:pb-28">
+      <Container>
+        <Reveal className="flex flex-col gap-4 pb-7 sm:flex-row sm:items-end sm:justify-between">
+          <div><p className="eyebrow">{usingSamples ? "Development dataset" : "Public database"}</p><h2 className="mt-3 font-serif text-3xl font-medium text-navy" id="summary-title">The record, as it stands.</h2></div>
+          <p className="max-w-xs text-xs leading-5 text-slate">Every figure below is derived from stored records—not a marketing counter.</p>
+        </Reveal>
+        <MetricGrid summary={summary} />
+      </Container>
+    </section>
 
-    <section className="border-y border-line bg-[#eeece6] py-20 lg:py-24"><Container><div className="flex flex-col justify-between gap-7 sm:flex-row sm:items-end"><SectionHeading eyebrow="Featured research" title="Analysis with a documented point of view" description={usingSamples ? "Sample editorial content demonstrates the intended institutional research format without making real transaction claims." : "Selected published reports connect underlying records with transparent, local analysis."} /><Link className="section-rule pb-1 text-navy transition-colors hover:text-accent" href="/research">View all research</Link></div><div className="mt-12 grid gap-6 md:grid-cols-3">{featuredResearch.map((article, index) => <ResearchCard article={article} index={index} key={article.slug} />)}</div></Container></section>
+    <ScrollStory />
 
-    <section className="bg-white py-20 lg:py-24"><Container><div className="grid gap-8 lg:grid-cols-[0.7fr_1.3fr] lg:items-end"><SectionHeading eyebrow="Transaction monitor" title="The underlying records, not just the headline" description={usingSamples ? "Every row is a fictional placeholder created solely to demonstrate the research interface." : "Recent stored transactions with direct paths to verification and source context."} /><div className="hidden justify-end lg:flex"><Link className="button-secondary" href="/properties">Open full database</Link></div></div><TableScroll className="mt-12 border border-line bg-white shadow-[0_18px_48px_rgba(11,34,57,0.08)]" label="Recent transactions, scroll horizontally if needed"><table className="w-full min-w-[760px] border-collapse text-left"><caption className="sr-only">Five recent commercial real estate transaction records</caption><thead><tr className="bg-navy text-[9px] font-bold uppercase tracking-[0.14em] text-white/70"><th className="px-5 py-4" scope="col">Property</th><th className="px-5 py-4" scope="col">Market</th><th className="px-5 py-4" scope="col">Property type</th><th className="px-5 py-4 text-right" scope="col">Sale price</th><th className="px-5 py-4 text-right" scope="col">Sale date</th></tr></thead><tbody>{recentTransactions.map((transaction) => <tr className="border-b border-line transition-colors last:border-b-0 hover:bg-mist/45" key={transaction.transactionId}><th className="px-5 py-5 text-sm font-bold text-navy" scope="row"><Link className="underline decoration-transparent underline-offset-4 hover:decoration-accent" href={`/properties/${transaction.slug}`}>{transaction.propertyName}</Link>{transaction.isSample ? <span className="mt-1.5 block text-[9px] uppercase tracking-[0.12em] text-accent">Fictional sample</span> : null}</th><td className="px-5 py-5 text-sm text-slate">{transaction.city}, {transaction.state}</td><td className="px-5 py-5 text-sm text-slate">{transaction.propertyType}</td><td className="px-5 py-5 text-right font-serif text-lg font-semibold tabular-nums text-navy">{formatCurrency(transaction.salePrice)}</td><td className="px-5 py-5 text-right text-sm tabular-nums text-slate">{formatDate(transaction.saleDate)}</td></tr>)}</tbody></table></TableScroll><div className="mt-6 lg:hidden"><Link className="button-secondary w-full" href="/properties">Open full database</Link></div></Container></section>
+    <section className="border-y border-line bg-[#ebe7df] py-20 lg:py-28">
+      <Container>
+        <Reveal className="flex flex-col justify-between gap-7 sm:flex-row sm:items-end">
+          <SectionHeading eyebrow="Featured research" title="Analysis with a documented point of view" description={usingSamples ? "Sample editorial content demonstrates the intended institutional research format without making real transaction claims." : "Selected reports connect underlying records with transparent, local analysis."} />
+          <Link className="inline-flex items-center gap-2 border-b border-navy pb-1 text-xs font-semibold uppercase tracking-[0.12em] text-navy transition-colors hover:border-accent hover:text-accent" href="/research">View all research <ArrowRight aria-hidden="true" className="size-4" /></Link>
+        </Reveal>
+        <div className="mt-12 grid gap-5 md:grid-cols-3">{featuredResearch.map((article, index) => <ResearchCard article={article} index={index} key={article.slug} />)}</div>
+      </Container>
+    </section>
 
-    <section className="market-section py-20 lg:py-24"><Container><SectionHeading eyebrow="Market snapshot" title="Patterns become clearer when the sample stays visible" description="A bounded view of the same records shown in the database, with sample size kept alongside each display." /><div className="mt-12"><MarketPreview records={recentTransactions} /></div></Container></section>
+    <section className="bg-white py-20 lg:py-28">
+      <Container>
+        <Reveal className="grid gap-8 lg:grid-cols-[0.72fr_1.28fr] lg:items-end">
+          <SectionHeading eyebrow="Transaction monitor" title="The underlying records, not just the headline" description={usingSamples ? "Every row is a fictional placeholder created solely to demonstrate the research interface." : "Recent stored transactions with direct paths to verification and source context."} />
+          <div className="hidden justify-end lg:flex"><Link className="button-secondary" href="/properties">Open full database <ArrowRight aria-hidden="true" className="ml-2 size-4" /></Link></div>
+        </Reveal>
+        <Reveal delay={0.08}>
+          <TableScroll className="mt-12 border border-line bg-white shadow-[0_24px_65px_rgba(7,26,44,0.08)]" label="Recent transactions, scroll horizontally if needed">
+            <table className="w-full min-w-[760px] border-collapse text-left">
+              <caption className="sr-only">Five recent commercial real estate transaction records</caption>
+              <thead><tr className="bg-ink text-[9px] font-semibold uppercase tracking-[0.15em] text-white/62"><th className="px-5 py-4" scope="col">Property</th><th className="px-5 py-4" scope="col">Market</th><th className="px-5 py-4" scope="col">Property type</th><th className="px-5 py-4 text-right" scope="col">Sale price</th><th className="px-5 py-4 text-right" scope="col">Sale date</th></tr></thead>
+              <tbody>{recentTransactions.map((transaction) => <tr className="group border-b border-line transition-colors last:border-b-0 hover:bg-mist/45" key={transaction.transactionId}><th className="px-5 py-5 text-sm font-semibold text-navy" scope="row"><Link className="underline decoration-transparent underline-offset-4 group-hover:decoration-accent" href={`/properties/${transaction.slug}`}>{transaction.propertyName}</Link>{transaction.isSample ? <span className="mt-1.5 block text-[9px] uppercase tracking-[0.12em] text-accent">Fictional sample</span> : null}</th><td className="px-5 py-5 text-sm text-slate">{transaction.city}, {transaction.state}</td><td className="px-5 py-5 text-sm text-slate">{transaction.propertyType}</td><td className="px-5 py-5 text-right font-serif text-xl font-medium tabular-nums text-navy">{formatCurrency(transaction.salePrice)}</td><td className="px-5 py-5 text-right font-mono text-xs tabular-nums text-slate">{formatDate(transaction.saleDate)}</td></tr>)}</tbody>
+            </table>
+          </TableScroll>
+        </Reveal>
+        <div className="mt-6 lg:hidden"><Link className="button-secondary w-full" href="/properties">Open full database</Link></div>
+      </Container>
+    </section>
 
-    <section className="border-b border-line bg-accent-soft/55 py-20 lg:py-24"><Container className="grid gap-10 lg:grid-cols-[0.9fr_1.1fr] lg:items-center"><div><p className="eyebrow">Research standard</p><h2 className="mt-4 max-w-2xl font-serif text-4xl font-semibold leading-[1.08] tracking-[-0.035em] text-navy sm:text-5xl">Credibility starts before the conclusion.</h2><p className="mt-6 max-w-xl text-base leading-7 text-slate">The platform connects transaction records with plain-language analysis while keeping reported, calculated, estimated, and unavailable values visibly distinct.</p><Link className="button-primary mt-8" href="/methodology">Review the Methodology</Link></div><blockquote className="relative border border-navy/15 bg-white p-8 shadow-[0_24px_60px_rgba(11,34,57,0.1)] sm:p-10"><span aria-hidden="true" className="absolute right-7 top-3 font-serif text-8xl leading-none text-mist">“</span><p className="relative font-serif text-3xl font-semibold leading-[1.25] text-navy">Show what is known. Explain what is calculated. Leave unavailable data unavailable.</p><footer className="mt-8 border-t border-line pt-5 text-[10px] font-bold uppercase tracking-[0.14em] text-accent">Mid-Atlantic CRE Intelligence research principle</footer></blockquote></Container></section>
+    <section className="market-section py-20 lg:py-28"><Container><Reveal><SectionHeading eyebrow="Market snapshot" title="Patterns become clearer when the sample stays visible" description="A bounded view of the same records shown in the database, with sample size kept alongside each display." /></Reveal><Reveal className="mt-12" delay={0.08}><MarketPreview records={recentTransactions} /></Reveal></Container></section>
+
+    <section className="border-b border-line bg-paper py-20 lg:py-28">
+      <Container className="grid gap-10 lg:grid-cols-[0.9fr_1.1fr] lg:items-center">
+        <Reveal><p className="eyebrow">Research standard</p><h2 className="mt-5 max-w-2xl font-serif text-5xl font-medium leading-[0.98] tracking-[-0.045em] text-navy sm:text-6xl">Credibility starts before the conclusion.</h2><p className="mt-6 max-w-xl text-base leading-7 text-slate">The platform connects transaction records with plain-language analysis while keeping reported, calculated, estimated, and unavailable values visibly distinct.</p><Link className="button-primary mt-8" href="/methodology">Review the methodology <ArrowRight aria-hidden="true" className="ml-2 size-4" /></Link></Reveal>
+        <Reveal delay={0.1}><blockquote className="relative overflow-hidden border border-navy/14 bg-white p-8 shadow-[0_28px_72px_rgba(7,26,44,0.09)] sm:p-10"><ShieldCheck aria-hidden="true" className="size-7 text-accent" strokeWidth={1.5} /><p className="relative mt-10 font-serif text-3xl font-medium leading-[1.16] text-navy sm:text-4xl">“Show what is known. Explain what is calculated. Leave unavailable data unavailable.”</p><footer className="mt-8 border-t border-line pt-5 text-[10px] font-semibold uppercase tracking-[0.14em] text-accent">Mid-Atlantic CRE Intelligence research principle</footer></blockquote></Reveal>
+      </Container>
+    </section>
   </>;
 }

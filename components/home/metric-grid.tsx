@@ -1,7 +1,11 @@
+"use client";
+
+import { motion, useReducedMotion } from "motion/react";
 import { formatCompactCurrency } from "@/lib/sample-data";
 import type { SummaryMetrics } from "@/lib/types";
 
 export function MetricGrid({ summary }: { summary: SummaryMetrics }) {
+  const reduceMotion = useReducedMotion();
   const metrics = [
     [summary.properties, "Properties tracked"],
     [summary.transactions, "Transactions analyzed"],
@@ -9,5 +13,5 @@ export function MetricGrid({ summary }: { summary: SummaryMetrics }) {
     [summary.markets, "Markets covered"],
     [summary.reports, "Published reports"],
   ];
-  return <div className="grid border border-line bg-white shadow-[0_22px_60px_rgba(11,34,57,0.1)] sm:grid-cols-2 lg:grid-cols-5">{metrics.map(([value, label], index) => <div className="relative min-h-36 border-b border-line px-5 py-6 last:border-b-0 sm:border-r lg:border-b-0 lg:last:border-r-0" key={label}><span className="absolute right-4 top-4 text-[9px] font-bold tabular-nums tracking-wider text-line">0{index + 1}</span><p className="mt-4 font-serif text-4xl font-semibold tracking-[-0.04em] text-navy">{value}</p><p className="mt-3 max-w-32 text-[10px] font-bold uppercase leading-4 tracking-[0.12em] text-slate">{label}</p></div>)}</div>;
+  return <motion.div className="metric-shell" initial={reduceMotion ? false : "hidden"} variants={{ hidden: {}, visible: { transition: { staggerChildren: 0.08 } } }} viewport={{ amount: 0.35, once: true }} whileInView={reduceMotion ? undefined : "visible"}>{metrics.map(([value, label], index) => <motion.div className="metric-cell" key={label} variants={{ hidden: { opacity: 0, y: 20 }, visible: { opacity: 1, transition: { duration: 0.58, ease: [0.22, 1, 0.36, 1] }, y: 0 } }}><span className="absolute right-5 top-5 font-mono text-[9px] tracking-wider text-line">0{index + 1}</span><p className="mt-5 font-serif text-5xl font-medium tracking-[-0.05em] text-navy">{value}</p><p className="mt-4 max-w-32 text-[10px] font-semibold uppercase leading-4 tracking-[0.13em] text-slate">{label}</p></motion.div>)}</motion.div>;
 }
