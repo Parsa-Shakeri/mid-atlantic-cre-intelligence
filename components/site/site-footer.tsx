@@ -1,7 +1,7 @@
 import Link from "next/link";
 import { ArrowUpRight } from "lucide-react";
 import { Container } from "@/components/ui/container";
-import { navItems } from "@/components/site/site-header";
+import { navItems } from "@/lib/navigation";
 
 export function SiteFooter() {
   return <footer className="border-t-2 border-copper bg-ink text-white">
