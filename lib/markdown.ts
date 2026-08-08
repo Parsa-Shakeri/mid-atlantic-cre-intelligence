@@ -1,5 +1,17 @@
 import type { MarkdownSection } from "./types";
 
+export function getMarkdownSectionId(heading: string, index: number) {
+  const slug = heading
+    .normalize("NFKD")
+    .replace(/[\u0300-\u036f]/g, "")
+    .toLowerCase()
+    .replace(/&/g, " and ")
+    .replace(/[^a-z0-9]+/g, "-")
+    .replace(/^-+|-+$/g, "");
+
+  return `${String(index + 1).padStart(2, "0")}-${slug || "analysis"}`;
+}
+
 export function parseMarkdownSections(markdown: string): MarkdownSection[] {
   const sections: MarkdownSection[] = [];
   let current: MarkdownSection | null = null;

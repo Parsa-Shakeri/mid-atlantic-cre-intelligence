@@ -62,9 +62,11 @@ a, button { outline-offset: 4px; }
   .prose-section p { @apply mt-4 max-w-3xl text-base leading-7 text-slate; }
   .prose-section ul { @apply mt-5 grid max-w-3xl gap-3 text-sm leading-6 text-slate; }
   .prose-section li { @apply border-l-2 border-line pl-4; }
-  .article-copy { @apply scroll-mt-32; }
-  .article-copy h2 { @apply font-serif text-3xl font-semibold tracking-tight text-navy; }
-  .article-copy p { @apply mt-5 text-[17px] leading-8 text-slate; }
+  .article-copy { @apply scroll-mt-44; }
+  .article-copy h2 { @apply max-w-3xl font-serif text-3xl font-semibold tracking-[-0.025em] text-navy sm:text-4xl; }
+  .article-copy p { @apply mt-6 max-w-[720px] font-serif text-[18px] leading-[1.8] text-slate; }
+  .article-copy p:first-of-type { @apply text-xl leading-[1.75] text-navy; }
+  .article-section-number { @apply mb-4 font-mono text-[9px] font-semibold uppercase tracking-[0.16em] text-accent; }
   .home-hero { @apply relative overflow-hidden bg-navy text-white; }
   .home-hero::before { content: "MD  /  DC  /  VA"; position: absolute; right: -1rem; bottom: -1rem; color: rgba(255,255,255,0.035); font-family: var(--font-serif); font-size: clamp(4.5rem, 11vw, 10rem); font-weight: 700; letter-spacing: -0.05em; white-space: nowrap; pointer-events: none; }
   .hero-brief { @apply relative border border-white/20 bg-[#102d48] p-6 shadow-[0_24px_70px_rgba(0,0,0,0.22)] sm:p-8; }
@@ -94,6 +96,33 @@ a, button { outline-offset: 4px; }
   .metric-cell { @apply relative min-h-40 border-b border-line px-6 py-7 last:border-b-0 sm:border-r lg:border-b-0 lg:last:border-r-0; }
   .motion-kicker { @apply flex items-center gap-3 text-[10px] font-semibold uppercase tracking-[0.2em] text-copper before:h-px before:w-10 before:bg-copper; }
   .data-grid { background-image: linear-gradient(rgba(255,255,255,0.045) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,0.045) 1px, transparent 1px); background-size: 36px 36px; mask-image: linear-gradient(to bottom, black, transparent 88%); }
+}
+
+@media print {
+  @page { margin: 16mm 18mm; }
+  html { scroll-behavior: auto; }
+  body { background: #fff; color: #071a2c; }
+  body > header,
+  body > footer,
+  body > .fixed,
+  .print-hidden,
+  .article-sidebar { display: none !important; }
+  .research-report .detail-hero { border-bottom: 2px solid #071a2c; background: #fff !important; }
+  .research-report .detail-hero::after,
+  .research-report .detail-hero-card::before { display: none; }
+  .research-report .detail-hero * { color: #071a2c !important; }
+  .research-report .detail-hero-card,
+  .research-report .panel,
+  .research-report [class*="shadow-"] { box-shadow: none !important; }
+  .research-report .detail-hero-card { border-color: #d7d2c8; background: #fff !important; }
+  .research-report > div:last-child { display: block; padding-top: 12mm; }
+  .research-report .article-copy h2,
+  .research-report section > h2,
+  .research-report figure figcaption { break-after: avoid; }
+  .research-report figure,
+  .research-report li,
+  .research-report .panel { break-inside: avoid; }
+  .research-report a { text-decoration: none !important; }
 }
 
 @keyframes loading-sweep {

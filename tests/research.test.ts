@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { parseMarkdownSections } from "../lib/markdown";
+import { getMarkdownSectionId, parseMarkdownSections } from "../lib/markdown";
 import { isResearchCategory, sampleResearchArticles, sampleResearchSummaries } from "../lib/research-data";
 import { RESEARCH_CATEGORIES } from "../lib/types";
 
@@ -21,6 +21,12 @@ describe("research content model", () => {
       { heading: "First section", paragraphs: ["Paragraph one."] },
       { heading: "Second section", paragraphs: ["Paragraph two."] },
     ]);
+  });
+
+  it("creates stable, readable anchors for report sections", () => {
+    expect(getMarkdownSectionId("Evidence & limitations", 1)).toBe("02-evidence-and-limitations");
+    expect(getMarkdownSectionId("Résumé of findings", 0)).toBe("01-resume-of-findings");
+    expect(getMarkdownSectionId("—", 2)).toBe("03-analysis");
   });
 
   it("rejects categories outside the controlled list", () => {
