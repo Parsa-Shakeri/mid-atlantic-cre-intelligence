@@ -20,6 +20,13 @@ export function parseDashboardFilters(params: SearchParams): DashboardFilters {
   };
 }
 
+export function buildDashboardFilterRemovalHref(current: URLSearchParams, key: keyof DashboardFilters) {
+  const next = new URLSearchParams(current);
+  next.delete(key);
+  const query = next.toString();
+  return query ? `/dashboard?${query}` : "/dashboard";
+}
+
 export function median(values: number[]): number | null {
   if (!values.length) return null;
   const sorted = values.toSorted((a, b) => a - b);

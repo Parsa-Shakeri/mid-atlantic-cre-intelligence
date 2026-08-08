@@ -1,5 +1,6 @@
 import { describe, expect, it } from "vitest";
-import { buildDashboardData, median, parseDashboardFilters } from "../lib/dashboard-utils";
+import { dashboardDataToCsv } from "../lib/dashboard-export";
+import { buildDashboardData, buildDashboardFilterRemovalHref, median, parseDashboardFilters } from "../lib/dashboard-utils";
 import { samplePropertyList } from "../lib/sample-data";
 
 describe("dashboard calculations", () => {
@@ -38,5 +39,20 @@ describe("dashboard calculations", () => {
     expect(filters.dateFrom).toBe("");
     expect(filters.state).toBe("");
     expect(filters.propertyType).toBe("");
+  });
+
+  it("removes one dashboard filter without mutating the current parameters", () => {
+    const current = new URLSearchParams("state=MD&propertyType=Industrial");
+    expect(buildDashboardFilterRemovalHref(current, "state")).toBe("/dashboard?propertyType=Industrial");
+    expect(current.get("state")).toBe("MD");
+  });
+
+  it("exports the filtered dashboard snapshot as safe CSV", () => {
+    const data = buildDashboardData(samplePropertyList, parseDashboardFilters({ state: "MD" }));
+    const csv = dashboardDataToCsv(data);
+    expect(csv).toContain("section,label,market");
+    expect(csv).toContain('"filter","state","MD"');
+    expect(csv).toContain('"metric","Transactions"');
+    expect(csv).toContain('"largest_transaction","Recorded sale"');
   });
 });
