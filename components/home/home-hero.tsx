@@ -40,18 +40,18 @@ export function HomeHero({ usingSamples }: { usingSamples: boolean }) {
           </div>
           <aside className="hero-edition-card" aria-label="Research edition status">
             <div className="flex items-center justify-between border-b border-white/14 pb-5">
-              <span className="text-[10px] font-semibold uppercase tracking-[0.18em] text-white/48">Research edition</span>
+              <span className="text-[10px] font-semibold uppercase tracking-[0.18em] text-white/68">Research edition</span>
               <span className="font-mono text-xs text-copper">2026 / 01</span>
             </div>
             <p className="mt-7 font-serif text-3xl font-medium leading-tight text-white">A regional record built from public evidence.</p>
             <div className="mt-7 flex items-start gap-3 border-t border-white/14 pt-5">
               <MapPinned aria-hidden="true" className="mt-0.5 size-4 shrink-0 text-copper" strokeWidth={1.7} />
-              <p className="text-xs leading-5 text-white/58">{usingSamples ? "Development data is clearly marked as fictional." : "Each material figure links back to its record, verification state, and sources."}</p>
+              <p className="text-xs leading-5 text-white/70">{usingSamples ? "Development data is clearly marked as fictional." : "Each material figure links back to its record, verification state, and sources."}</p>
             </div>
           </aside>
         </motion.div>
 
-        <div className="mt-14 grid border-y border-white/14 text-[10px] font-medium uppercase tracking-[0.16em] text-white/46 sm:grid-cols-3">
+        <div className="mt-14 grid border-y border-white/14 text-[10px] font-medium uppercase tracking-[0.16em] text-white/68 sm:grid-cols-3">
           <p className="flex items-center gap-3 border-b border-white/14 py-4 sm:border-b-0 sm:border-r"><span className="font-mono text-copper">01</span> Transaction records</p>
           <p className="flex items-center gap-3 border-b border-white/14 py-4 sm:border-b-0 sm:border-r sm:px-5"><span className="font-mono text-copper">02</span> Source-linked evidence</p>
           <p className="flex items-center gap-3 py-4 sm:px-5"><span className="font-mono text-copper">03</span> Transparent analysis</p>

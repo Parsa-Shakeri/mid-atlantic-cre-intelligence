@@ -72,10 +72,10 @@ export default async function ResearchArticlePage({ params }: PageProps) {
               <p className="mt-7 max-w-3xl font-serif text-xl leading-8 text-white/78 sm:text-2xl sm:leading-9">{article.thesis}</p>
             </div>
             <dl className="detail-hero-card grid grid-cols-2 gap-x-5 gap-y-6 text-sm lg:grid-cols-1">
-              <div><dt className="text-[9px] font-bold uppercase tracking-[0.14em] text-white/45">Research desk</dt><dd className="mt-1.5 font-semibold text-white">{article.author}</dd></div>
-              <div><dt className="text-[9px] font-bold uppercase tracking-[0.14em] text-white/45">Published</dt><dd className="mt-1.5 font-semibold text-white">{formatDate(article.publicationDate)}</dd></div>
-              <div><dt className="text-[9px] font-bold uppercase tracking-[0.14em] text-white/45">Reading time</dt><dd className="mt-1.5 font-semibold text-white">{article.readingTime} minutes</dd></div>
-              <div><dt className="text-[9px] font-bold uppercase tracking-[0.14em] text-white/45">Source record</dt><dd className="mt-1.5 font-semibold text-white">{article.sources.length} {article.sources.length === 1 ? "citation" : "citations"}</dd></div>
+              <div><dt className="text-[9px] font-bold uppercase tracking-[0.14em] text-white/68">Research desk</dt><dd className="mt-1.5 font-semibold text-white">{article.author}</dd></div>
+              <div><dt className="text-[9px] font-bold uppercase tracking-[0.14em] text-white/68">Published</dt><dd className="mt-1.5 font-semibold text-white">{formatDate(article.publicationDate)}</dd></div>
+              <div><dt className="text-[9px] font-bold uppercase tracking-[0.14em] text-white/68">Reading time</dt><dd className="mt-1.5 font-semibold text-white">{article.readingTime} minutes</dd></div>
+              <div><dt className="text-[9px] font-bold uppercase tracking-[0.14em] text-white/68">Source record</dt><dd className="mt-1.5 font-semibold text-white">{article.sources.length} {article.sources.length === 1 ? "citation" : "citations"}</dd></div>
             </dl>
           </div>
         </Container>

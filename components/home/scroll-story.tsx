@@ -17,7 +17,7 @@ function LinearStory({ animated = false, className = "" }: { animated?: boolean;
       <Container>
         <p className="motion-kicker">Research workflow</p>
         <h2 className="mt-6 max-w-2xl font-serif text-4xl font-medium leading-[1.03] tracking-[-0.035em] sm:text-5xl" id="linear-workflow-title">Evidence moves before conclusions do.</h2>
-        <p className="mt-5 max-w-xl text-sm leading-7 text-white/52">Each record advances through the same three-stage process before it informs the public analysis.</p>
+        <p className="mt-5 max-w-xl text-sm leading-7 text-white/70">Each record advances through the same three-stage process before it informs the public analysis.</p>
         <div className="mt-10 grid gap-5 lg:grid-cols-3">
           {stages.map(({ number, label, title, copy, icon: Icon }, index) => (
             <motion.article
@@ -29,9 +29,9 @@ function LinearStory({ animated = false, className = "" }: { animated?: boolean;
               whileInView={animated ? { opacity: 1, y: 0 } : undefined}
             >
               <Icon aria-hidden="true" className="size-5 text-copper" strokeWidth={1.6} />
-              <p className="mt-8 font-mono text-xs text-white/40">{number} / {label}</p>
+              <p className="mt-8 font-mono text-xs text-white/68">{number} / {label}</p>
               <h3 className="mt-4 font-serif text-3xl font-medium">{title}</h3>
-              <p className="mt-4 text-sm leading-7 text-white/58">{copy}</p>
+              <p className="mt-4 text-sm leading-7 text-white/70">{copy}</p>
             </motion.article>
           ))}
         </div>
@@ -82,14 +82,14 @@ export function ScrollStory() {
             <p className="motion-kicker">Research workflow</p>
             <p className="mt-6 max-w-sm font-serif text-4xl font-medium leading-[1.03] tracking-[-0.035em] sm:text-5xl">Evidence moves before conclusions do.</p>
             <div className="mt-10 h-px bg-white/12"><motion.div className="h-full origin-left bg-copper" style={{ scaleX: progressScale }} /></div>
-            <p className="mt-4 max-w-xs text-xs leading-5 text-white/42">Scroll through the workflow or choose a step directly.</p>
+            <p className="mt-4 max-w-xs text-xs leading-5 text-white/68">Scroll through the workflow or choose a step directly.</p>
             <div aria-label="Research workflow steps" className="mt-8 grid gap-px border border-white/12 bg-white/12 sm:grid-cols-3 lg:grid-cols-1" role="group">
               {stages.map(({ number, label }, index) => {
                 const isActive = activeIndex === index;
                 return (
                   <button
                     aria-pressed={isActive}
-                    className={`flex min-h-14 items-center justify-between gap-4 px-4 text-left transition-colors focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-[-2px] focus-visible:outline-copper ${isActive ? "bg-copper text-white" : "bg-ink text-white/52 hover:bg-white/[0.06] hover:text-white"}`}
+                    className={`flex min-h-14 items-center justify-between gap-4 px-4 text-left transition-colors focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-[-2px] focus-visible:outline-copper ${isActive ? "bg-copper text-ink" : "bg-ink text-white/70 hover:bg-white/[0.06] hover:text-white"}`}
                     data-workflow-step={label.toLowerCase()}
                     key={number}
                     onClick={() => activateStage(index)}
@@ -113,8 +113,8 @@ export function ScrollStory() {
               transition={{ duration: 0.45, ease: [0.22, 1, 0.36, 1] }}
             />
             <div className="relative flex items-center justify-between border-b border-white/12 pb-5">
-              <span className="font-mono text-[10px] uppercase tracking-[0.16em] text-white/40">Record protocol</span>
-              <span className="flex items-center gap-2 text-[10px] uppercase tracking-[0.13em] text-white/46"><Check aria-hidden="true" className="size-3 text-copper" /> Step {activeIndex + 1} of {stages.length}</span>
+              <span className="font-mono text-[10px] uppercase tracking-[0.16em] text-white/68">Record protocol</span>
+              <span className="flex items-center gap-2 text-[10px] uppercase tracking-[0.13em] text-white/68"><Check aria-hidden="true" className="size-3 text-copper" /> Step {activeIndex + 1} of {stages.length}</span>
             </div>
             <div className="relative mt-8 min-h-[410px]">
               <AnimatePresence initial={false} mode="wait">
@@ -129,11 +129,11 @@ export function ScrollStory() {
                 >
                   <div>
                     <div className="flex items-center justify-between"><span className="font-mono text-sm text-copper">{activeStage.number}</span><ActiveIcon aria-hidden="true" className="size-6 text-white/45" strokeWidth={1.4} /></div>
-                    <p className="mt-12 text-[10px] font-semibold uppercase tracking-[0.2em] text-white/40">{activeStage.label}</p>
+                    <p className="mt-12 text-[10px] font-semibold uppercase tracking-[0.2em] text-white/68">{activeStage.label}</p>
                     <h2 className="mt-4 max-w-xl font-serif text-5xl font-medium leading-[0.98] tracking-[-0.045em] sm:text-6xl">{activeStage.title}</h2>
-                    <p className="mt-6 max-w-lg text-sm leading-7 text-white/58 sm:text-base">{activeStage.copy}</p>
+                    <p className="mt-6 max-w-lg text-sm leading-7 text-white/70 sm:text-base">{activeStage.copy}</p>
                   </div>
-                  <div className="grid grid-cols-2 gap-px border border-white/10 bg-white/10 text-[10px] uppercase tracking-[0.12em] text-white/36 sm:grid-cols-4">
+                  <div className="grid grid-cols-2 gap-px border border-white/10 bg-white/10 text-[10px] uppercase tracking-[0.12em] text-white/66 sm:grid-cols-4">
                     {["Property", "Transaction", "Evidence", "Method"].map((field) => <span className="bg-[#0b2135] px-3 py-4" key={field}>{field}</span>)}
                   </div>
                 </motion.article>

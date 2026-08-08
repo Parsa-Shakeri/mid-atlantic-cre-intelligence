@@ -8,7 +8,7 @@
   --color-slate: #566574;
   --color-line: #d7d2c8;
   --color-mist: #ebe8e1;
-  --color-accent: #ae4f31;
+  --color-accent: #9f442a;
   --color-accent-soft: #eadbd2;
   --color-copper: #cb6846;
   --font-sans: var(--font-geist), "Segoe UI", sans-serif;
@@ -89,7 +89,7 @@ a, button { outline-offset: 4px; }
   .market-section .section-description { @apply text-[#b9c5ce]; }
   .home-hero-v2 { @apply relative isolate overflow-hidden bg-ink text-white; }
   .hero-image-shade { @apply absolute inset-0 bg-[linear-gradient(90deg,#071a2c_0%,rgba(7,26,44,0.96)_26%,rgba(7,26,44,0.62)_64%,rgba(7,26,44,0.18)_100%)]; }
-  .hero-primary-action { @apply inline-flex min-h-12 items-center justify-center gap-2 bg-copper px-6 py-3 text-sm font-semibold text-white shadow-[0_14px_36px_rgba(0,0,0,0.24)] transition-[transform,background-color] hover:-translate-y-0.5 hover:bg-[#d47451]; }
+  .hero-primary-action { @apply inline-flex min-h-12 items-center justify-center gap-2 bg-copper px-6 py-3 text-sm font-semibold text-ink shadow-[0_14px_36px_rgba(0,0,0,0.24)] transition-[transform,background-color] hover:-translate-y-0.5 hover:bg-[#d47451]; }
   .hero-secondary-action { @apply inline-flex min-h-12 items-center justify-center gap-2 border border-white/28 bg-white/[0.035] px-6 py-3 text-sm font-semibold text-white backdrop-blur-sm transition-[transform,background-color,border-color] hover:-translate-y-0.5 hover:border-white/55 hover:bg-white/[0.08]; }
   .hero-edition-card { @apply border border-white/16 bg-[#071a2c]/65 p-6 shadow-[0_28px_80px_rgba(0,0,0,0.24)] backdrop-blur-md sm:p-7; }
   .metric-shell { @apply grid border border-line bg-white shadow-[0_28px_74px_rgba(7,26,44,0.085)] sm:grid-cols-2 lg:grid-cols-5; }

@@ -61,7 +61,7 @@ export default async function HomePage() {
       </Container>
     </section>
 
-    <section className="market-section py-20 lg:py-28"><Container><Reveal><SectionHeading eyebrow="Market snapshot" title="Patterns become clearer when the sample stays visible" description="A bounded view of the same records shown in the database, with sample size kept alongside each display." /></Reveal><Reveal className="mt-12" delay={0.08}><MarketPreview records={recentTransactions} /></Reveal></Container></section>
+    <section className="market-section py-20 lg:py-28"><Container><Reveal><SectionHeading eyebrow="Market snapshot" title="Patterns become clearer when the sample stays visible" description="A bounded view of the same records shown in the database, with sample size kept alongside each display." tone="dark" /></Reveal><Reveal className="mt-12" delay={0.08}><MarketPreview records={recentTransactions} /></Reveal></Container></section>
 
     <section className="border-b border-line bg-paper py-20 lg:py-28">
       <Container className="grid gap-10 lg:grid-cols-[0.9fr_1.1fr] lg:items-center">
