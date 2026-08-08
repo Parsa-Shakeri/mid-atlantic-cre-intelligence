@@ -1,6 +1,6 @@
 import { describe, expect, it } from "vitest";
 import { samplePropertyList } from "../lib/sample-data";
-import { buildPropertyFilterOptions, calculateCapRate, calculatePricePerSquareFoot, filterAndSortProperties, parsePropertyQuery } from "../lib/property-utils";
+import { buildPropertyFilterOptions, buildPropertyFilterRemovalHref, calculateCapRate, calculatePricePerSquareFoot, filterAndSortProperties, parsePropertyQuery } from "../lib/property-utils";
 
 describe("property calculations", () => {
   it("calculates price per square foot", () => expect(calculatePricePerSquareFoot(1_000_000, 10_000)).toBe(100));
@@ -58,5 +58,10 @@ describe("property database queries", () => {
     expect(query.page).toBe(1);
     expect(query.sort).toBe("sale_date");
     expect(query.direction).toBe("desc");
+  });
+  it("removes one filter and resets pagination without losing the remaining query", () => {
+    const current = new URLSearchParams("state=MD&propertyType=Office&page=4&sort=sale_price");
+    expect(buildPropertyFilterRemovalHref(current, "state")).toBe("/properties?propertyType=Office&sort=sale_price");
+    expect(current.get("state")).toBe("MD");
   });
 });

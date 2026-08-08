@@ -95,3 +95,11 @@ export function buildPageHref(current: URLSearchParams, page: number) {
   next.set("page", String(page));
   return `/properties?${next.toString()}`;
 }
+
+export function buildPropertyFilterRemovalHref(current: URLSearchParams, keys: string | string[]) {
+  const next = new URLSearchParams(current);
+  for (const key of Array.isArray(keys) ? keys : [keys]) next.delete(key);
+  next.delete("page");
+  const query = next.toString();
+  return query ? `/properties?${query}` : "/properties";
+}
