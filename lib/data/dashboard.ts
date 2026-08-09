@@ -6,6 +6,7 @@ import { VERIFICATION_STATUSES, type DashboardData, type DashboardFilters, type 
 import type { Json } from "@/lib/supabase/database.types";
 
 type JsonObject = { [key: string]: Json | undefined };
+const DASHBOARD_QUERY_TIMEOUT_MS = 8_000;
 
 const objectValue = (value: Json | undefined): JsonObject | null => value && typeof value === "object" && !Array.isArray(value) ? value : null;
 const arrayValue = (value: Json | undefined) => Array.isArray(value) ? value : [];
@@ -46,10 +47,18 @@ export async function getDashboardData(filters: DashboardFilters): Promise<Dashb
   const fallback = () => buildDashboardData(samplePropertyList, filters, "sample");
   const client = createPublicSupabaseClient();
   if (!client) return fallback();
-  const { data, error } = await client.rpc("get_market_dashboard", {
-    filter_date_from: filters.dateFrom || null, filter_date_to: filters.dateTo || null, filter_state: filters.state || null,
-    filter_county: filters.county || null, filter_city: filters.city || null, filter_property_type: filters.propertyType || null,
-  });
-  if (error || data === null) return fallback();
-  return parsePayload(data, filters) ?? fallback();
+  const controller = new AbortController();
+  const timeout = setTimeout(() => controller.abort(), DASHBOARD_QUERY_TIMEOUT_MS);
+  try {
+    const { data, error } = await client.rpc("get_market_dashboard", {
+      filter_date_from: filters.dateFrom || null, filter_date_to: filters.dateTo || null, filter_state: filters.state || null,
+      filter_county: filters.county || null, filter_city: filters.city || null, filter_property_type: filters.propertyType || null,
+    }).abortSignal(controller.signal);
+    if (error || data === null) return fallback();
+    return parsePayload(data, filters) ?? fallback();
+  } catch {
+    return fallback();
+  } finally {
+    clearTimeout(timeout);
+  }
 }
