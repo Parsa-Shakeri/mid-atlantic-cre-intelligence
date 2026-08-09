@@ -1,14 +1,15 @@
 import { CAP_RATE_MINIMUM_SAMPLE, type DashboardMetrics } from "@/lib/types";
+import { formatCount } from "@/lib/count-label";
 import { formatCompactCurrency, formatCurrency, formatNumber } from "@/lib/sample-data";
 
 export function DashboardMetrics({ metrics }: { metrics: DashboardMetrics }) {
   const cards = [
-    { label: "Transactions", value: formatNumber(metrics.transactionCount), context: "Filtered records", sample: `n = ${metrics.transactionCount}` },
-    { label: "Total sales volume", value: formatCompactCurrency(metrics.totalSalesVolume), context: "Recorded consideration", sample: `n = ${metrics.transactionCount}` },
-    { label: "Median sale price", value: metrics.medianSalePrice === null ? "Unavailable" : formatCompactCurrency(metrics.medianSalePrice), context: "Middle recorded sale", sample: `n = ${metrics.transactionCount}` },
-    { label: "Median price / sq. ft.", value: metrics.medianPricePerSqFt === null ? "Unavailable" : formatCurrency(metrics.medianPricePerSqFt), context: "Usable size and price", sample: `n = ${metrics.pricePerSqFtSampleSize}` },
-    { label: "Median reported cap rate", value: metrics.medianReportedCapRate === null ? "Suppressed" : `${(metrics.medianReportedCapRate * 100).toFixed(2)}%`, context: metrics.medianReportedCapRate === null ? `Minimum n = ${CAP_RATE_MINIMUM_SAMPLE}` : "Reported observations only", sample: `n = ${metrics.capRateSampleSize}` },
-    { label: "Average building size", value: metrics.averageBuildingSize === null ? "Unavailable" : `${formatNumber(Math.round(metrics.averageBuildingSize))} sf`, context: "Records with stated area", sample: `n = ${metrics.buildingSizeSampleSize}` },
+    { label: "Transactions", value: formatNumber(metrics.transactionCount), context: "Filtered records", sample: formatCount(metrics.transactionCount, "record") },
+    { label: "Total sales volume", value: formatCompactCurrency(metrics.totalSalesVolume), context: "Recorded consideration", sample: formatCount(metrics.transactionCount, "record") },
+    { label: "Median sale price", value: metrics.medianSalePrice === null ? "Unavailable" : formatCompactCurrency(metrics.medianSalePrice), context: "Middle recorded sale", sample: formatCount(metrics.transactionCount, "record") },
+    { label: "Median price / sq. ft.", value: metrics.medianPricePerSqFt === null ? "Unavailable" : formatCurrency(metrics.medianPricePerSqFt), context: "Usable size and price", sample: formatCount(metrics.pricePerSqFtSampleSize, "usable record") },
+    { label: "Median reported cap rate", value: metrics.medianReportedCapRate === null ? "Suppressed" : `${(metrics.medianReportedCapRate * 100).toFixed(2)}%`, context: metrics.medianReportedCapRate === null ? `Requires ${formatCount(CAP_RATE_MINIMUM_SAMPLE, "reported record")}` : "Reported observations only", sample: formatCount(metrics.capRateSampleSize, "reported record") },
+    { label: "Average building size", value: metrics.averageBuildingSize === null ? "Unavailable" : `${formatNumber(Math.round(metrics.averageBuildingSize))} sf`, context: "Records with stated area", sample: formatCount(metrics.buildingSizeSampleSize, "record") },
   ];
 
   return (

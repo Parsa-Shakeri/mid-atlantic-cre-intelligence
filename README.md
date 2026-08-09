@@ -11,6 +11,7 @@ An independent student research platform for commercial real estate transactions
 - Self-hosted Geist, Geist Mono, and Newsreader through `next/font`
 - Supabase with PostgreSQL and Row Level Security
 - Recharts for accessible client-rendered charts
+- Vercel Web Analytics and Speed Insights
 - Vitest for domain and query tests
 - Vercel-compatible deployment
 
@@ -23,6 +24,8 @@ app/                         Routes, metadata, sitemap, and global styles
 app/properties/              Searchable database and property detail routes
 app/research/                Research library and article routes
 app/dashboard/               Filtered market dashboard
+app/project/                 Public product and engineering case study
+app/changelog/               Material data, research, and product updates
 components/home/             Homepage publication and data components
 components/motion/           Reduced-motion-aware reveal and scroll utilities
 components/properties/       Filters, results, badges, and value display
@@ -128,7 +131,13 @@ Phase 3 adds `executive_summary`, `limitations`, and an optional JSON exhibit th
 
 The `/dashboard` page provides URL-shareable filters for date range, state, county, city, and property type. It displays transaction count, total sales volume, median sale price, median price per square foot, median reported cap rate, and average building size. Visuals cover transaction count over time, sales volume by property type, median price per square foot by market, and reported cap-rate distribution. Largest-transaction and market-comparison tables retain links to underlying records.
 
-`supabase/migrations/202607210003_phase4_dashboard.sql` adds a read-only PostgreSQL aggregation function. The browser receives bounded aggregate series and top-ten tables rather than the complete transaction dataset. Reported cap-rate statistics are suppressed when fewer than three usable observations match the filters, and every metric or chart displays its sample size.
+`supabase/migrations/202607210003_phase4_dashboard.sql` adds a read-only PostgreSQL aggregation function. The browser receives bounded aggregate series and top-ten tables rather than the complete transaction dataset. Reported cap-rate statistics are suppressed when fewer than three usable observations match the filters, and every metric or chart displays its usable record count in plain language.
+
+## Project case study and public profile
+
+The `/project` case study explains the research problem, evidence workflow, technical architecture, safeguards, and product decisions behind the platform. `/changelog` records material updates that affect data interpretation, methodology, research, or product behavior. The About page connects the same work to its research, data, product, and engineering responsibilities.
+
+Optional founder profile links are configured through environment variables and remain hidden when blank. This keeps the repository safe to reuse without publishing personal information by default.
 
 ## Administration and CSV import
 
@@ -157,7 +166,7 @@ The export at `/admin/export` produces a private, non-cached property/transactio
 
 ## SEO and indexing safety
 
-Global metadata includes canonical URLs, Open Graph and X cards generated with `next/og`, a generated application icon, a web manifest, organization and website structured data, and restrictive metadata for unavailable records. Published article pages include Article structured data.
+Global metadata includes canonical URLs, Open Graph and X cards generated with `next/og`, a generated application icon, a web manifest, organization and website structured data, and restrictive metadata for unavailable records. Published article pages include Article structured data. The production property database publishes Dataset structured data; fictional fallback data deliberately does not.
 
 The sitemap reads real property and published-article slugs from Supabase and excludes fictional sample records. A production build without both Supabase public environment variables is marked `noindex` and disallowed in `robots.txt`; this prevents an accidentally deployed development dataset from appearing in search results.
 
@@ -184,16 +193,18 @@ Tests cover price-per-square-foot and verified cap-rate calculations, search, co
 - If sign-in succeeds but access is denied, add the authenticated user's UUID to `admin_profiles`.
 - If an import is rejected, correct every preview error. A duplicate discovered by PostgreSQL rolls back the entire batch.
 - If draft articles do not appear publicly, this is expected; only `published` articles are visible on public routes.
-- If schema-related errors appear, confirm that all four migrations were applied in filename order.
+- If schema-related errors appear, confirm that every migration was applied in filename order.
 
 ## Vercel deployment
 
 1. Push the project to GitHub and import it into Vercel as a Next.js project.
 2. Select Node.js 22, or another supported version at or above 20.9.
 3. Apply all Supabase migrations. Do not apply the fictional seed file to production.
-4. Add `NEXT_PUBLIC_SITE_URL`, `NEXT_PUBLIC_SUPABASE_URL`, `NEXT_PUBLIC_SUPABASE_ANON_KEY`, and an optional `NEXT_PUBLIC_CONTACT_EMAIL` in Vercel. The site URL must be the final canonical origin.
+4. Add `NEXT_PUBLIC_SITE_URL`, `NEXT_PUBLIC_SUPABASE_URL`, `NEXT_PUBLIC_SUPABASE_ANON_KEY`, and an optional `NEXT_PUBLIC_CONTACT_EMAIL` in Vercel. Add the optional founder profile and Google verification values from `.env.example` when ready. The site URL must be the final canonical origin.
 5. Set the matching Site URL and permitted redirect origins in Supabase Authentication.
 6. Deploy, then verify public pages, administrator redirection, metadata routes, security headers, and one complete authenticated editing flow. Vercel preview deployments remain no-index even when connected to Supabase.
+
+Vercel Web Analytics and Speed Insights are mounted in the root layout. Enable both products for the Vercel project to begin collecting production traffic and Core Web Vitals. For Google Search Console, add its HTML-tag verification token as `NEXT_PUBLIC_GOOGLE_SITE_VERIFICATION`, redeploy, verify the property, and submit `/sitemap.xml`.
 
 The included GitHub Actions workflow runs linting, strict type checks, tests, and a production build on pull requests and pushes to the main branch. Vercel uses the dedicated `vercel-build` script and the repository's Node 22 runtime declaration.
 

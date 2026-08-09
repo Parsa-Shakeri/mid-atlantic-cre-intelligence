@@ -7,6 +7,7 @@ import { Container } from "@/components/ui/container";
 import { PageHero } from "@/components/ui/page-hero";
 import { getProperties, getPropertyFilterOptions } from "@/lib/data/properties";
 import { buildPageHref, parsePropertyQuery } from "@/lib/property-utils";
+import { getSiteUrl } from "@/lib/site-url";
 
 export const metadata: Metadata = { title: "Property Database", description: "Search and filter sourced commercial property transaction records across the Mid-Atlantic region.", alternates: { canonical: "/properties" } };
 type PageProps = { searchParams: Promise<Record<string, string | string[] | undefined>> };
@@ -27,8 +28,24 @@ export default async function PropertiesPage({ searchParams }: PageProps) {
   }
 
   const resultKey = currentParams.toString() || "all-records";
+  const siteUrl = getSiteUrl();
+  const datasetStructuredData = {
+    "@context": "https://schema.org",
+    "@type": "Dataset",
+    "@id": `${siteUrl}/properties#dataset`,
+    name: "Mid-Atlantic Commercial Real Estate Transaction Database",
+    description: "A source-linked research dataset of selected commercial property transactions across Maryland, Washington, D.C., and Northern Virginia.",
+    url: `${siteUrl}/properties`,
+    creator: { "@id": `${siteUrl}/#organization` },
+    isAccessibleForFree: true,
+    keywords: ["commercial real estate", "property transactions", "Maryland", "Washington DC", "Northern Virginia"],
+    spatialCoverage: ["Maryland", "Washington, D.C.", "Northern Virginia"],
+    variableMeasured: ["Sale price", "Sale date", "Building square footage", "Price per square foot", "Reported cap rate", "Buyer", "Seller", "Verification status"],
+    distribution: { "@type": "DataDownload", name: "Filtered market dashboard export", contentUrl: `${siteUrl}/dashboard/export`, encodingFormat: "text/csv" },
+  };
   return (
     <>
+      {result.source === "supabase" ? <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(datasetStructuredData).replace(/</g, "\\u003c") }} /> : null}
       <PageHero eyebrow="Regional transaction research" title="Property Database" description="Search transaction-level property records with visible sourcing, calculation, and verification context." disclosure={result.source === "sample" ? "This development edition uses a clearly labeled fictional dataset. No row represents a real property or transaction." : "Public records may be delayed or incomplete. Review each record's source and verification status."} />
       <Container className="py-10 sm:py-14">
         <PropertyFilters currentParams={currentParams} options={filterOptions} query={query} />
