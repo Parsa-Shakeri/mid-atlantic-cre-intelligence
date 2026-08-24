@@ -35,7 +35,7 @@ components/admin/            Protected forms, notices, and CSV review UI
 components/site/             Shared navigation and footer
 components/ui/               Design-system primitives
 data/                         Clearly labeled sample CSV
-docs/                         Release checklist and design-source references
+docs/                         Release checklist, report archive, launch kit, and design references
 lib/data/                     Server-side data access layer
 lib/supabase/                 Supabase client and generated-style types
 supabase/migrations/          Versioned PostgreSQL schema
@@ -138,6 +138,8 @@ The `/dashboard` page provides URL-shareable filters for date range, state, coun
 The `/project` case study explains the research problem, evidence workflow, technical architecture, safeguards, and product decisions behind the platform. `/changelog` records material updates that affect data interpretation, methodology, research, or product behavior. The About page connects the same work to its research, data, product, and engineering responsibilities.
 
 Optional founder profile links are configured through environment variables and remain hidden when blank. This keeps the repository safe to reuse without publishing personal information by default.
+
+The July 2026 flagship report is preserved in `docs/flagship-report-archive.md` as a disaster-recovery editorial copy. Reusable portfolio, résumé, outreach, and audience-development language is maintained in `docs/launch-kit.md`. The public Supabase article remains the canonical version.
 
 ## Administration and CSV import
 

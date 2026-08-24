@@ -124,12 +124,14 @@ export interface PropertyFilterOptions {
   saleYears: string[];
 }
 
+export type PublicDataSource = "supabase" | "sample" | "unavailable";
+
 export interface PaginatedProperties {
   records: PropertyListItem[];
   total: number;
   page: number;
   pageSize: number;
-  source: "supabase" | "sample";
+  source: PublicDataSource;
 }
 
 export interface SummaryMetrics {
@@ -138,7 +140,7 @@ export interface SummaryMetrics {
   totalValue: number;
   markets: number;
   reports: number;
-  source: "supabase" | "sample";
+  source: PublicDataSource;
 }
 
 export interface SampleArticle {
@@ -292,7 +294,7 @@ export interface DashboardMarketComparison {
 }
 
 export interface DashboardData {
-  source: "supabase" | "sample";
+  source: PublicDataSource;
   containsOnlySamples: boolean;
   filters: DashboardFilters;
   filterOptions: DashboardFilterOptions;

@@ -4,6 +4,7 @@ import { ArrowUpRight, BookOpen, Database, ShieldCheck } from "lucide-react";
 import { ArticleCard } from "@/components/research/article-card";
 import { Container } from "@/components/ui/container";
 import { PageHero } from "@/components/ui/page-hero";
+import { PublicDataUnavailable } from "@/components/ui/public-data-unavailable";
 import { SectionHeading } from "@/components/ui/section-heading";
 import { getResearchArticles } from "@/lib/data/research";
 import { isResearchCategory } from "@/lib/research-data";
@@ -28,15 +29,22 @@ export default async function ResearchPage({ searchParams }: PageProps) {
   const supportingArticles = featured.slice(1);
   const filtered = activeCategory ? articles.filter((article) => article.category === activeCategory) : articles;
   const categoryCounts = new Map(RESEARCH_CATEGORIES.map((category) => [category, articles.filter((article) => article.category === category).length]));
+  const disclosure = source === "sample"
+    ? "Every development article is a fictional sample and makes no real market or transaction claim."
+    : source === "unavailable"
+      ? "The public research service is temporarily unavailable. No sample reports are being substituted."
+      : "Published reports are drawn from the public research database and retain their source records.";
 
   return <>
-    <PageHero eyebrow="Independent analysis" title="Research" description="Original frameworks, deal analysis, and educational reporting built around transparent sources and visible limits." disclosure={source === "sample" ? "Every development article is a fictional sample and makes no real market or transaction claim." : "Published reports are drawn from the public research database and retain their source records."} />
+    <PageHero eyebrow="Independent analysis" title="Research" description="Original frameworks, deal analysis, and educational reporting built around transparent sources and visible limits." disclosure={disclosure} />
 
     <section className="border-b border-line bg-white" aria-label="Research standards">
       <Container className="grid sm:grid-cols-3">
         {[{ icon: BookOpen, label: "Editorial format", value: "Thesis-led reporting" }, { icon: Database, label: "Evidence standard", value: "Linked source records" }, { icon: ShieldCheck, label: "Reader safeguard", value: "Limits stated plainly" }].map(({ icon: Icon, label, value }) => <div className="flex min-h-24 items-center gap-4 border-b border-line px-1 py-5 last:border-b-0 sm:border-b-0 sm:border-r sm:px-6 sm:first:pl-0 sm:last:border-r-0" key={label}><Icon aria-hidden="true" className="size-4 shrink-0 text-accent" /><div><p className="text-[9px] font-bold uppercase tracking-[0.14em] text-slate">{label}</p><p className="mt-1 font-serif text-lg font-semibold text-navy">{value}</p></div></div>)}
       </Container>
     </section>
+
+    {source === "unavailable" ? <Container className="py-16 lg:py-20"><PublicDataUnavailable /></Container> : null}
 
     {leadArticle && !activeCategory ? <section className="border-b border-line bg-[#e9e5dc] py-16 lg:py-20">
       <Container>
@@ -55,7 +63,7 @@ export default async function ResearchPage({ searchParams }: PageProps) {
       </Container>
     </section> : null}
 
-    <Container className="py-16 lg:py-20">
+    {source !== "unavailable" ? <Container className="py-16 lg:py-20">
       <details className="panel mb-8 lg:hidden">
         <summary className="flex min-h-14 cursor-pointer list-none items-center justify-between px-5 text-xs font-semibold text-navy marker:content-none"><span>Browse by category</span><span className="tag">{activeCategory || "All research"}</span></summary>
         <nav aria-label="Research categories" className="border-t border-line px-5 pb-3"><Link className={`category-link ${!activeCategory ? "category-link-active" : ""}`} href="/research"><span>All research</span><span>{articles.length}</span></Link>{RESEARCH_CATEGORIES.map((category) => <Link className={`category-link ${activeCategory === category ? "category-link-active" : ""}`} href={`/research?category=${encodeURIComponent(category)}`} key={category}><span>{category}</span><span>{categoryCounts.get(category)}</span></Link>)}</nav>
@@ -69,6 +77,6 @@ export default async function ResearchPage({ searchParams }: PageProps) {
           {filtered.length ? <div>{filtered.map((article, index) => <ArticleCard article={article} index={index} key={article.id} />)}</div> : <div className="panel mt-8 p-10 text-center" role="status"><BookOpen aria-hidden="true" className="mx-auto size-6 text-accent" /><p className="mt-5 font-serif text-2xl font-semibold text-navy">No reports in this category yet</p><p className="mx-auto mt-2 max-w-lg text-sm leading-6 text-slate">The empty category remains visible rather than being filled with placeholder claims. Choose another category to continue browsing.</p><Link className="button-secondary mt-6" href="/research">View all research</Link></div>}
         </section>
       </div>
-    </Container>
+    </Container> : null}
   </>;
 }

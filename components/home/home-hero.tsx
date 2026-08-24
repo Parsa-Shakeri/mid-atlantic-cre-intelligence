@@ -6,8 +6,9 @@ import { ArrowRight, BookOpen, Database, MapPinned } from "lucide-react";
 import { motion, useReducedMotion, useScroll, useTransform } from "motion/react";
 import { useRef } from "react";
 import { Container } from "@/components/ui/container";
+import type { PublicDataSource } from "@/lib/types";
 
-export function HomeHero({ usingSamples }: { usingSamples: boolean }) {
+export function HomeHero({ dataSource }: { dataSource: PublicDataSource }) {
   const heroRef = useRef<HTMLElement>(null);
   const reduceMotion = useReducedMotion();
   const { scrollYProgress } = useScroll({ target: heroRef, offset: ["start start", "end start"] });
@@ -46,7 +47,7 @@ export function HomeHero({ usingSamples }: { usingSamples: boolean }) {
             <p className="mt-7 font-serif text-3xl font-medium leading-tight text-white">A regional record built from public evidence.</p>
             <div className="mt-7 flex items-start gap-3 border-t border-white/14 pt-5">
               <MapPinned aria-hidden="true" className="mt-0.5 size-4 shrink-0 text-copper" strokeWidth={1.7} />
-              <p className="text-xs leading-5 text-white/70">{usingSamples ? "Development data is clearly marked as fictional." : "Each material figure links back to its record, verification state, and sources."}</p>
+              <p className="text-xs leading-5 text-white/70">{dataSource === "sample" ? "Development data is clearly marked as fictional." : dataSource === "unavailable" ? "Live records are withheld while the public data service is unavailable." : "Each material figure links back to its record, verification state, and sources."}</p>
             </div>
           </aside>
         </motion.div>

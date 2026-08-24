@@ -39,7 +39,7 @@ export async function getPropertyFilterOptions(): Promise<PropertyFilterOptions>
     .select("city, county, sale_date")
     .limit(5000);
 
-  if (error) return sampleFilterOptions;
+  if (error) return { counties: [], cities: [], saleYears: [] };
 
   return buildPropertyFilterOptions((data ?? []).map((record) => ({
     city: record.city,
@@ -67,7 +67,7 @@ export async function getProperties(query: PropertyQuery): Promise<PaginatedProp
   if (query.verificationStatus) request = request.eq("verification_status", query.verificationStatus);
   const start = (query.page - 1) * query.pageSize;
   const { data, count, error } = await request.order(query.sort, { ascending: query.direction === "asc", nullsFirst: false }).range(start, start + query.pageSize - 1);
-  if (error) return fallbackProperties(query);
+  if (error) return { records: [], total: 0, page: query.page, pageSize: query.pageSize, source: "unavailable" };
   return { records: (data ?? []).map(mapListRow).filter((item): item is PropertyListItem => item !== null), total: count ?? 0, page: query.page, pageSize: query.pageSize, source: "supabase" };
 }
 
@@ -95,7 +95,7 @@ export async function getPropertyBySlug(slug: string): Promise<PropertyRecord | 
   const client = createPublicSupabaseClient();
   if (!client) return sampleProperties.find((property) => property.slug === slug) ?? null;
   const { data: property, error } = await client.from("properties").select("*").eq("slug", slug).maybeSingle();
-  if (error || !property) return sampleProperties.find((item) => item.slug === slug) ?? null;
+  if (error || !property) return null;
   const [transactionsResult, sourcesResult] = await Promise.all([
     client.from("transactions").select("*").eq("property_id", property.id).order("sale_date", { ascending: false }),
     client.from("sources").select("*").eq("property_id", property.id).order("accessed_date", { ascending: false }),
@@ -107,7 +107,7 @@ export async function getSummaryMetrics(): Promise<SummaryMetrics> {
   const client = createPublicSupabaseClient();
   if (!client) return sampleSummary;
   const { data, error } = await client.from("public_market_summary").select("*").maybeSingle();
-  if (error || !data) return sampleSummary;
+  if (error || !data) return { properties: 0, transactions: 0, totalValue: 0, markets: 0, reports: 0, source: "unavailable" };
   return { properties: Number(data.properties ?? 0), transactions: Number(data.transactions ?? 0), totalValue: Number(data.total_value ?? 0), markets: Number(data.markets ?? 0), reports: Number(data.reports ?? 0), source: "supabase" };
 }
 
@@ -115,6 +115,6 @@ export async function getRecentTransactions(limit = 5): Promise<PropertyListItem
   const client = createPublicSupabaseClient();
   if (!client) return samplePropertyList.toSorted((a, b) => b.saleDate.localeCompare(a.saleDate)).slice(0, limit);
   const { data, error } = await client.from("property_transaction_records").select("*").order("sale_date", { ascending: false }).limit(limit);
-  if (error) return samplePropertyList.toSorted((a, b) => b.saleDate.localeCompare(a.saleDate)).slice(0, limit);
+  if (error) return [];
   return (data ?? []).map(mapListRow).filter((item): item is PropertyListItem => item !== null);
 }

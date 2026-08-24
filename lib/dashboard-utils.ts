@@ -1,4 +1,4 @@
-import { CAP_RATE_MINIMUM_SAMPLE, PROPERTY_TYPES, US_STATES, type CoveredState, type DashboardCapRateBin, type DashboardData, type DashboardFilters, type DashboardLargestTransaction, type DashboardMarketComparison, type DashboardMarketPrice, type DashboardPropertyTypeVolume, type DashboardTimePoint, type PropertyListItem, type PropertyType } from "./types";
+import { CAP_RATE_MINIMUM_SAMPLE, PROPERTY_TYPES, US_STATES, type CoveredState, type DashboardCapRateBin, type DashboardData, type DashboardFilters, type DashboardLargestTransaction, type DashboardMarketComparison, type DashboardMarketPrice, type DashboardPropertyTypeVolume, type DashboardTimePoint, type PropertyListItem, type PropertyType, type PublicDataSource } from "./types";
 
 type SearchParams = Record<string, string | string[] | undefined>;
 
@@ -103,7 +103,7 @@ function largest(records: PropertyListItem[]): DashboardLargestTransaction[] {
     verificationStatus: record.verificationStatus, isSample: record.isSample }));
 }
 
-export function buildDashboardData(allRecords: PropertyListItem[], filters: DashboardFilters, source: "supabase" | "sample" = "sample"): DashboardData {
+export function buildDashboardData(allRecords: PropertyListItem[], filters: DashboardFilters, source: PublicDataSource = "sample"): DashboardData {
   const records = filterRecords(allRecords, filters);
   const prices = records.map((record) => record.pricePerSqFt).filter((value): value is number => value !== null);
   const caps = records.map((record) => record.reportedCapRate).filter((value): value is number => value !== null);

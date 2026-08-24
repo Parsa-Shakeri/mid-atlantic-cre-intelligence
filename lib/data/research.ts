@@ -3,7 +3,7 @@ import type { Database } from "@/lib/supabase/database.types";
 import { createPublicSupabaseClient } from "@/lib/supabase/server";
 import { parseResearchExhibit } from "@/lib/research-exhibit";
 import { isResearchCategory, sampleResearchArticles, sampleResearchSummaries } from "@/lib/research-data";
-import type { RelatedPropertySummary, ResearchArticle, ResearchArticleSummary, SourceRecord } from "@/lib/types";
+import type { PublicDataSource, RelatedPropertySummary, ResearchArticle, ResearchArticleSummary, SourceRecord } from "@/lib/types";
 
 type ArticleRow = Database["public"]["Tables"]["articles"]["Row"];
 type PropertyRow = Database["public"]["Tables"]["properties"]["Row"];
@@ -30,13 +30,13 @@ function fallbackArticles(category?: string) {
   return category && isResearchCategory(category) ? sampleResearchSummaries.filter((article) => article.category === category) : sampleResearchSummaries;
 }
 
-export async function getResearchArticles(category?: string): Promise<{ articles: ResearchArticleSummary[]; source: "supabase" | "sample" }> {
+export async function getResearchArticles(category?: string): Promise<{ articles: ResearchArticleSummary[]; source: PublicDataSource }> {
   const client = createPublicSupabaseClient();
   if (!client) return { articles: fallbackArticles(category), source: "sample" };
   let request = client.from("articles").select("*").eq("status", "published").order("publication_date", { ascending: false });
   if (category && isResearchCategory(category)) request = request.eq("category", category);
   const { data, error } = await request;
-  if (error) return { articles: fallbackArticles(category), source: "sample" };
+  if (error) return { articles: [], source: "unavailable" };
   return { articles: (data ?? []).map(mapSummary).filter((article): article is ResearchArticleSummary => article !== null), source: "supabase" };
 }
 
@@ -44,7 +44,7 @@ export async function getFeaturedResearch(limit = 3): Promise<ResearchArticleSum
   const client = createPublicSupabaseClient();
   if (!client) return sampleResearchSummaries.filter((article) => article.featured).slice(0, limit);
   const { data, error } = await client.from("articles").select("*").eq("status", "published").eq("featured", true).order("publication_date", { ascending: false }).limit(limit);
-  if (error) return sampleResearchSummaries.filter((article) => article.featured).slice(0, limit);
+  if (error) return [];
   return (data ?? []).map(mapSummary).filter((article): article is ResearchArticleSummary => article !== null);
 }
 
@@ -53,7 +53,7 @@ export async function getResearchArticleBySlug(slug: string): Promise<ResearchAr
   const client = createPublicSupabaseClient();
   if (!client) return fallback;
   const { data: article, error } = await client.from("articles").select("*").eq("slug", slug).eq("status", "published").maybeSingle();
-  if (error || !article || !article.publication_date) return fallback;
+  if (error || !article || !article.publication_date) return null;
   const [sourcesResult, linksResult, relatedResult] = await Promise.all([
     client.from("sources").select("*").eq("article_id", article.id).order("accessed_date", { ascending: false }),
     client.from("article_properties").select("property_id").eq("article_id", article.id),

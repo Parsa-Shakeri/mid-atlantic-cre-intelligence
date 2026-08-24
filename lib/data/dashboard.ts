@@ -45,6 +45,7 @@ function parsePayload(payload: Json, filters: DashboardFilters): DashboardData |
 
 export async function getDashboardData(filters: DashboardFilters): Promise<DashboardData> {
   const fallback = () => buildDashboardData(samplePropertyList, filters, "sample");
+  const unavailable = () => buildDashboardData([], filters, "unavailable");
   const client = createPublicSupabaseClient();
   if (!client) return fallback();
   const controller = new AbortController();
@@ -54,10 +55,10 @@ export async function getDashboardData(filters: DashboardFilters): Promise<Dashb
       filter_date_from: filters.dateFrom || null, filter_date_to: filters.dateTo || null, filter_state: filters.state || null,
       filter_county: filters.county || null, filter_city: filters.city || null, filter_property_type: filters.propertyType || null,
     }).abortSignal(controller.signal);
-    if (error || data === null) return fallback();
-    return parsePayload(data, filters) ?? fallback();
+    if (error || data === null) return unavailable();
+    return parsePayload(data, filters) ?? unavailable();
   } catch {
-    return fallback();
+    return unavailable();
   } finally {
     clearTimeout(timeout);
   }
