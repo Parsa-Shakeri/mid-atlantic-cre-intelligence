@@ -26,6 +26,16 @@ I created Mid-Atlantic CRE Intelligence to explore how public commercial real es
 
 The July 2026 transaction monitor is the clearest single demonstration of the project: it connects 16 verified property records and 16 citations to one thesis while preserving the limits of a selective dataset.
 
+## Trackable launch links
+
+Use one link per channel so Vercel Analytics can separate application, LinkedIn, and direct-outreach visits under **UTM Parameters**. Keep the untracked canonical links in formal citations and anywhere a clean URL matters more than campaign measurement.
+
+- Applications and portfolio submissions: https://mid-atlantic-cre-intelligence.vercel.app/project?utm_source=application&utm_medium=portfolio&utm_campaign=career_2026
+- LinkedIn launch post: https://mid-atlantic-cre-intelligence.vercel.app/project?utm_source=linkedin&utm_medium=social&utm_campaign=project_launch
+- Direct outreach email: https://mid-atlantic-cre-intelligence.vercel.app/project?utm_source=direct_outreach&utm_medium=email&utm_campaign=project_launch
+- LinkedIn flagship-report link: https://mid-atlantic-cre-intelligence.vercel.app/research/mid-atlantic-transaction-monitor-sixteen-verified-sales-and-1-33-billion-in-recorded-volume?utm_source=linkedin&utm_medium=social&utm_campaign=project_launch
+- Direct-outreach flagship-report link: https://mid-atlantic-cre-intelligence.vercel.app/research/mid-atlantic-transaction-monitor-sixteen-verified-sales-and-1-33-billion-in-recorded-volume?utm_source=direct_outreach&utm_medium=email&utm_campaign=project_launch
+
 ## Professional launch post
 
 I built Mid-Atlantic CRE Intelligence, an independent student research platform for selected commercial real estate transactions across Maryland, Washington, D.C., and Northern Virginia.
