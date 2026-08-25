@@ -6,7 +6,7 @@ export const revalidate = 3600;
 
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const baseUrl = getSiteUrl();
-  const corePages: MetadataRoute.Sitemap = ["", "/properties", "/research", "/dashboard", "/project", "/changelog", "/about", "/methodology"].map((path) => ({ url: `${baseUrl}${path}`, lastModified: new Date(), changeFrequency: path === "" || path === "/properties" || path === "/research" || path === "/dashboard" || path === "/changelog" ? "weekly" : "monthly", priority: path === "" ? 1 : 0.7 }));
+  const corePages: MetadataRoute.Sitemap = ["", "/properties", "/research", "/dashboard", "/project", "/changelog", "/corrections", "/about", "/methodology"].map((path) => ({ url: `${baseUrl}${path}`, lastModified: new Date(), changeFrequency: path === "" || path === "/properties" || path === "/research" || path === "/dashboard" || path === "/changelog" ? "weekly" : "monthly", priority: path === "" ? 1 : 0.7 }));
   const client = createPublicSupabaseClient();
   if (!client) return corePages;
   const [propertyResult, researchResult] = await Promise.all([

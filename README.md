@@ -216,6 +216,7 @@ The full release and rollback procedure is in `docs/deployment-checklist.md`.
 
 Public feedback is routed through structured GitHub issue forms so reports arrive with the evidence needed for review:
 
+- [Read the public corrections and feedback policy](https://mid-atlantic-cre-intelligence.vercel.app/corrections)
 - [Request a data correction or source update](https://github.com/Parsa-Shakeri/mid-atlantic-cre-intelligence/issues/new?template=data-correction.yml)
 - [Report a reproducible website bug](https://github.com/Parsa-Shakeri/mid-atlantic-cre-intelligence/issues/new?template=bug-report.yml)
 - [Report a security vulnerability privately](SECURITY.md)

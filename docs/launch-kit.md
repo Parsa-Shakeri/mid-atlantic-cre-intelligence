@@ -26,15 +26,16 @@ I created Mid-Atlantic CRE Intelligence to explore how public commercial real es
 
 The July 2026 transaction monitor is the clearest single demonstration of the project: it connects 16 verified property records and 16 citations to one thesis while preserving the limits of a selective dataset.
 
-## Trackable launch links
+## Free-plan launch links and measurement
 
-Use one link per channel so Vercel Analytics can separate application, LinkedIn, and direct-outreach visits under **UTM Parameters**. Keep the untracked canonical links in formal citations and anywhere a clean URL matters more than campaign measurement.
+Vercel's free Hobby plan provides page-view and referrer reporting, but not custom events or UTM-parameter reporting. Use clean canonical links and compare the **Pages** and **Referrers** views instead of promising channel-level attribution the plan cannot provide. Direct and email visits may not carry a distinguishable referrer.
 
-- Applications and portfolio submissions: https://mid-atlantic-cre-intelligence.vercel.app/project?utm_source=application&utm_medium=portfolio&utm_campaign=career_2026
-- LinkedIn launch post: https://mid-atlantic-cre-intelligence.vercel.app/project?utm_source=linkedin&utm_medium=social&utm_campaign=project_launch
-- Direct outreach email: https://mid-atlantic-cre-intelligence.vercel.app/project?utm_source=direct_outreach&utm_medium=email&utm_campaign=project_launch
-- LinkedIn flagship-report link: https://mid-atlantic-cre-intelligence.vercel.app/research/mid-atlantic-transaction-monitor-sixteen-verified-sales-and-1-33-billion-in-recorded-volume?utm_source=linkedin&utm_medium=social&utm_campaign=project_launch
-- Direct-outreach flagship-report link: https://mid-atlantic-cre-intelligence.vercel.app/research/mid-atlantic-transaction-monitor-sixteen-verified-sales-and-1-33-billion-in-recorded-volume?utm_source=direct_outreach&utm_medium=email&utm_campaign=project_launch
+- Applications and portfolio submissions: https://mid-atlantic-cre-intelligence.vercel.app/project
+- Professional-profile link: https://mid-atlantic-cre-intelligence.vercel.app/about
+- LinkedIn launch post: https://mid-atlantic-cre-intelligence.vercel.app/research/mid-atlantic-transaction-monitor-sixteen-verified-sales-and-1-33-billion-in-recorded-volume
+- Direct outreach: choose the project page for a product overview or the flagship report for research-focused feedback.
+
+If the project later moves to a paid analytics plan, add campaign parameters only after confirming they appear in the production dashboard.
 
 ## Professional launch post
 
