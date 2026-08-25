@@ -29,7 +29,7 @@
 ## Release verification
 
 - Run `npm run check` and `npm run build` before merging.
-- Confirm `/`, `/properties`, `/research`, `/dashboard`, `/methodology`, and `/about` return successfully.
+- Confirm `/`, `/properties`, `/research`, `/dashboard`, `/coverage`, `/methodology`, and `/about` return successfully.
 - Confirm `/admin` redirects signed-out visitors to `/admin/login`.
 - Confirm `robots.txt`, `sitemap.xml`, `manifest.webmanifest`, `icon`, and `og.png` return successfully.
 - Inspect a real property and a published research article for canonical metadata and sample labeling.

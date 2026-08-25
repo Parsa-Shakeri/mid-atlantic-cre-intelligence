@@ -24,6 +24,7 @@ app/                         Routes, metadata, sitemap, and global styles
 app/properties/              Searchable database and property detail routes
 app/research/                Research library and article routes
 app/dashboard/               Filtered market dashboard
+app/coverage/                Public database coverage scorecard
 app/project/                 Public product and engineering case study
 app/changelog/               Material data, research, and product updates
 components/home/             Homepage publication and data components
@@ -130,6 +131,8 @@ Phase 3 adds `executive_summary`, `limitations`, and an optional JSON exhibit th
 ## Market dashboard
 
 The `/dashboard` page provides URL-shareable filters for date range, state, county, city, and property type. It displays transaction count, total sales volume, median sale price, median price per square foot, median reported cap rate, and average building size. Visuals cover transaction count over time, sales volume by property type, median price per square foot by market, and reported cap-rate distribution. Largest-transaction and market-comparison tables retain links to underlying records.
+
+The `/coverage` page measures the current public, non-sample database itself: geography and property-type distribution, material-field availability, source support, verification states, transaction date range, and latest record update. It explicitly distinguishes database share from regional market share and exposes its query ceiling.
 
 `supabase/migrations/202607210003_phase4_dashboard.sql` adds a read-only PostgreSQL aggregation function. The browser receives bounded aggregate series and top-ten tables rather than the complete transaction dataset. Reported cap-rate statistics are suppressed when fewer than three usable observations match the filters, and every metric or chart displays its usable record count in plain language.
 

@@ -30,6 +30,7 @@ export default async function HomePage() {
         </Reveal>
         {dataUnavailable ? <PublicDataUnavailable className="mb-7" /> : null}
         <MetricGrid summary={summary} />
+        {!dataUnavailable ? <div className="mt-5 flex justify-end"><Link className="inline-flex items-center gap-2 text-xs font-semibold text-navy underline decoration-line underline-offset-4" href="/coverage">Inspect database coverage <ArrowRight aria-hidden="true" className="size-4 text-accent" /></Link></div> : null}
       </Container>
     </section>
 

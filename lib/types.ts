@@ -143,6 +143,49 @@ export interface SummaryMetrics {
   source: PublicDataSource;
 }
 
+export interface CoverageBreakdown {
+  label: string;
+  propertyCount: number;
+  transactionCount: number;
+  transactionShare: number;
+}
+
+export interface CoverageField {
+  key: "building-area" | "price-per-square-foot" | "reported-cap-rate" | "reported-noi" | "buyer" | "seller" | "verification-date";
+  label: string;
+  scope: "properties" | "transactions";
+  availableCount: number;
+  missingCount: number;
+  totalCount: number;
+  availabilityRate: number;
+  missingRate: number;
+}
+
+export interface CoverageVerificationStatus {
+  status: VerificationStatus;
+  count: number;
+  share: number;
+}
+
+export interface CoverageData {
+  source: "supabase" | "unavailable";
+  propertyCount: number;
+  transactionCount: number;
+  sourceCount: number;
+  earliestSaleDate: string | null;
+  latestSaleDate: string | null;
+  latestUpdatedAt: string | null;
+  sourceLinkedTransactionCount: number;
+  multiSourceTransactionCount: number;
+  unsourcedTransactionCount: number;
+  byState: CoverageBreakdown[];
+  byPropertyType: CoverageBreakdown[];
+  fields: CoverageField[];
+  verificationStatuses: CoverageVerificationStatus[];
+  truncated: boolean;
+  queryLimit: number;
+}
+
 export interface SampleArticle {
   slug: string;
   title: string;
