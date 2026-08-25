@@ -22,3 +22,5 @@ Mid-Atlantic CRE Intelligence is a source-first research project. Contributions 
 ## Security and privacy
 
 Never commit `.env.local`, database passwords, service-role keys, private personal information, or unpublished source material. Public Supabase credentials may be used only with the repository's Row Level Security policies applied.
+
+Report suspected vulnerabilities through [the security policy](SECURITY.md), not a public issue. Use the repository's structured issue forms for public data corrections and reproducible website bugs. Every correction remains subject to source review and does not automatically change a published record.

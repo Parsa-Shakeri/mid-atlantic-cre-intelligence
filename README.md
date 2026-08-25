@@ -212,6 +212,16 @@ The included GitHub Actions workflow runs linting, strict type checks, tests, an
 
 The full release and rollback procedure is in `docs/deployment-checklist.md`.
 
+## Corrections, bugs, and security
+
+Public feedback is routed through structured GitHub issue forms so reports arrive with the evidence needed for review:
+
+- [Request a data correction or source update](https://github.com/Parsa-Shakeri/mid-atlantic-cre-intelligence/issues/new?template=data-correction.yml)
+- [Report a reproducible website bug](https://github.com/Parsa-Shakeri/mid-atlantic-cre-intelligence/issues/new?template=bug-report.yml)
+- [Report a security vulnerability privately](SECURITY.md)
+
+Do not submit confidential, proprietary, internship, credential, or private personal information. A correction request starts an evidence review and does not automatically change the database or a published conclusion.
+
 ## Future improvements
 
 - Add automated browser accessibility checks and visual regression tests in CI.

@@ -1,0 +1,93 @@
+name: Data correction or source update
+description: Flag a transaction, property, research, or dashboard value that may need review.
+title: "[Data correction]: "
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thank you for helping improve the public record. Submissions are public.
+
+        Do not include confidential, proprietary, internship, personal, or paywalled-extracted information. A correction is reviewed against public evidence before any record or conclusion changes.
+
+  - type: input
+    id: record_url
+    attributes:
+      label: Affected page
+      description: Paste the full Mid-Atlantic CRE Intelligence URL containing the value.
+      placeholder: https://mid-atlantic-cre-intelligence.vercel.app/properties/example
+    validations:
+      required: true
+
+  - type: dropdown
+    id: record_type
+    attributes:
+      label: Record type
+      options:
+        - Property
+        - Transaction
+        - Research report
+        - Dashboard or market aggregate
+        - Methodology or definition
+        - Other
+    validations:
+      required: true
+
+  - type: input
+    id: field
+    attributes:
+      label: Field or statement under review
+      placeholder: Sale price, buyer, building size, article sentence, chart value...
+    validations:
+      required: true
+
+  - type: textarea
+    id: current_value
+    attributes:
+      label: Current published value
+      description: Quote only the short value or statement that may be incorrect.
+    validations:
+      required: true
+
+  - type: textarea
+    id: proposed_correction
+    attributes:
+      label: Proposed correction
+      description: Explain the change and why the current value may be inaccurate.
+    validations:
+      required: true
+
+  - type: input
+    id: source_url
+    attributes:
+      label: Public source URL
+      description: Provide the strongest directly supporting public source.
+      placeholder: https://...
+    validations:
+      required: true
+
+  - type: textarea
+    id: source_context
+    attributes:
+      label: Source context
+      description: Identify the publisher, publication date, relevant section, and any limits or ambiguity.
+    validations:
+      required: true
+
+  - type: checkboxes
+    id: confirmation
+    attributes:
+      label: Submission checks
+      options:
+        - label: The source is publicly accessible and does not contain confidential or proprietary information.
+          required: true
+        - label: I have not included private personal information, credentials, or unpublished material.
+          required: true
+        - label: I understand that a submission starts a review and does not automatically change the database.
+          required: true
+
+  - type: textarea
+    id: additional_context
+    attributes:
+      label: Additional context
+      description: Add concise context that would help reproduce or evaluate the discrepancy.
+

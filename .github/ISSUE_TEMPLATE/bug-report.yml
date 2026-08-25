@@ -1,0 +1,101 @@
+name: Website bug
+description: Report a reproducible problem with the public website or administrator interface.
+title: "[Bug]: "
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Use this form for software behavior. Use the data-correction form when the website works but a published fact, calculation, or source may be wrong.
+
+        Issues are public. Never include passwords, API keys, private records, personal information, or security exploit details.
+
+  - type: input
+    id: page_url
+    attributes:
+      label: Affected page
+      description: Paste the full URL where the problem occurs.
+      placeholder: https://mid-atlantic-cre-intelligence.vercel.app/...
+    validations:
+      required: true
+
+  - type: dropdown
+    id: area
+    attributes:
+      label: Area
+      options:
+        - Property database
+        - Property detail
+        - Research
+        - Market dashboard
+        - Administrator interface
+        - Navigation or layout
+        - Accessibility
+        - Other
+    validations:
+      required: true
+
+  - type: textarea
+    id: problem
+    attributes:
+      label: What happened?
+      description: Describe the observable behavior without including sensitive information.
+    validations:
+      required: true
+
+  - type: textarea
+    id: steps
+    attributes:
+      label: Steps to reproduce
+      placeholder: |
+        1. Open...
+        2. Select...
+        3. Observe...
+    validations:
+      required: true
+
+  - type: textarea
+    id: expected
+    attributes:
+      label: Expected behavior
+    validations:
+      required: true
+
+  - type: input
+    id: environment
+    attributes:
+      label: Browser and device
+      description: Include the browser name, approximate version, and desktop or mobile device.
+      placeholder: Edge 140 on Windows 11 desktop
+    validations:
+      required: true
+
+  - type: dropdown
+    id: impact
+    attributes:
+      label: Impact
+      options:
+        - Blocks a core task
+        - Produces an incorrect result
+        - Makes content difficult to use
+        - Visual or minor issue
+    validations:
+      required: true
+
+  - type: checkboxes
+    id: confirmation
+    attributes:
+      label: Submission checks
+      options:
+        - label: I searched existing issues for the same problem.
+          required: true
+        - label: I removed credentials, personal information, and confidential material.
+          required: true
+        - label: This report does not disclose an unpatched security vulnerability.
+          required: true
+
+  - type: textarea
+    id: additional_context
+    attributes:
+      label: Additional context
+      description: Add a screenshot only if it contains no private or sensitive information.
+

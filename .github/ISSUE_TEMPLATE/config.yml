@@ -1,0 +1,9 @@
+blank_issues_enabled: false
+contact_links:
+  - name: Methodology and limitations
+    url: https://mid-atlantic-cre-intelligence.vercel.app/methodology
+    about: Review the verification rules, calculations, coverage, and known limitations before filing a correction.
+  - name: Security policy
+    url: https://github.com/Parsa-Shakeri/mid-atlantic-cre-intelligence/security/policy
+    about: Read the private-reporting instructions before disclosing a security concern.
+
