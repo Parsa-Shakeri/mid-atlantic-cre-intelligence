@@ -8,7 +8,7 @@ import { getSiteUrl } from "@/lib/site-url";
 
 export const metadata: Metadata = {
   title: "Project Case Study",
-  description: "How Mid-Atlantic CRE Intelligence turns fragmented public evidence into a source-linked research database, dashboard, and publication workflow.",
+  description: "How Capital Parcel turns fragmented public evidence into a source-linked research database, comparable-sales tool, dashboard, and publication workflow.",
   alternates: { canonical: "/project" },
 };
 
@@ -35,7 +35,7 @@ export default function ProjectPage() {
     "@context": "https://schema.org",
     "@type": "CreativeWork",
     "@id": `${siteUrl}/project#case-study`,
-    name: "Mid-Atlantic CRE Intelligence project case study",
+    name: "Capital Parcel project case study",
     url: `${siteUrl}/project`,
     creator: { "@id": `${siteUrl}/#organization` },
     about: ["Commercial real estate research", "Public-source verification", "Data product development"],

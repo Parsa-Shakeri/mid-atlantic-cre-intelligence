@@ -31,6 +31,8 @@ export interface TransactionRecord {
 
 export interface SourceRecord {
   id: string;
+  propertyId?: string | null;
+  transactionId?: string | null;
   sourceName: string;
   sourceUrl: string;
   publicationDate: string | null;
@@ -88,6 +90,8 @@ export interface PropertyListItem {
   reportedCapRate: number | null;
   reportedNoi: number | null;
   pricePerSqFt: number | null;
+  pricePerSqFtBasis?: "Reported" | "Calculated";
+  sourceCount?: number;
   transactionType: string;
   verificationStatus: VerificationStatus;
   dateVerified: string | null;
@@ -132,6 +136,45 @@ export interface PaginatedProperties {
   page: number;
   pageSize: number;
   source: PublicDataSource;
+}
+
+export interface ComparableQuery {
+  dateFrom: string;
+  dateTo: string;
+  state: CoveredState | "";
+  county: string;
+  city: string;
+  propertyType: PropertyType | "";
+  priceMin: number | null;
+  priceMax: number | null;
+  sizeTarget: number | null;
+  sizeTolerance: 10 | 25 | 50 | 100;
+  verificationStatus: VerificationStatus | "";
+  page: number;
+}
+
+export interface ComparableMetrics {
+  matchedSales: number;
+  metricRecordCount: number;
+  totalSalesVolume: number;
+  medianSalePrice: number | null;
+  medianPricePerSqFt: number | null;
+  pricePerSqFtSampleSize: number;
+  medianBuildingSqFt: number | null;
+  buildingSizeSampleSize: number;
+  medianReportedCapRate: number | null;
+  capRateSampleSize: number;
+}
+
+export interface ComparableSalesData {
+  records: PropertyListItem[];
+  total: number;
+  page: number;
+  pageSize: number;
+  source: PublicDataSource;
+  metrics: ComparableMetrics;
+  truncated: boolean;
+  queryLimit: number;
 }
 
 export interface SummaryMetrics {

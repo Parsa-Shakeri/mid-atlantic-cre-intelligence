@@ -1,6 +1,6 @@
-# Mid-Atlantic CRE Intelligence
+# Capital Parcel
 
-An independent student research platform for commercial real estate transactions and market trends across Maryland, Washington, D.C., and Northern Virginia.
+Independent commercial property research for the Capital Region. Capital Parcel makes selected, source-backed transactions across Maryland, Washington, D.C., and Northern Virginia easier to search, compare, and verify.
 
 ## Technology
 
@@ -24,6 +24,8 @@ app/                         Routes, metadata, sitemap, and global styles
 app/properties/              Searchable database and property detail routes
 app/research/                Research library and article routes
 app/dashboard/               Filtered market dashboard
+app/comparables/             Shareable comparable-sales explorer
+app/feed.xml/                Published-research RSS feed
 app/coverage/                Public database coverage scorecard
 app/project/                 Public product and engineering case study
 app/changelog/               Material data, research, and product updates
@@ -32,6 +34,7 @@ components/motion/           Reduced-motion-aware reveal and scroll utilities
 components/properties/       Filters, results, badges, and value display
 components/research/         Article cards and accessible exhibits
 components/dashboard/        Filters, metrics, charts, and comparison tables
+components/comparables/      Comparable-sale filters, metrics, results, and sharing
 components/admin/            Protected forms, notices, and CSV review UI
 components/site/             Shared navigation and footer
 components/ui/               Design-system primitives
@@ -63,6 +66,8 @@ tests/                        Calculation, filtering, and sorting tests
 If port 3000 is already occupied, run `npm run dev -- --port 3001` and open `http://localhost:3001`.
 
 Without Supabase environment values, the site automatically uses nine fictional properties and ten fictional transactions. The interface labels every sample record.
+
+The Comparable Sales Explorer is available at `/comparables`. It builds bounded, shareable record sets from the same source-backed transaction view, displays usable-record counts beside calculated medians, suppresses reported cap-rate medians below the stated minimum, and never estimates missing values. Published research is also available at `/feed.xml`; set `NEXT_PUBLIC_NEWSLETTER_URL` only when an external subscription page is ready.
 
 ## Supabase setup
 
@@ -205,7 +210,7 @@ Tests cover price-per-square-foot and verified cap-rate calculations, search, co
 1. Push the project to GitHub and import it into Vercel as a Next.js project.
 2. Select Node.js 22, or another supported version at or above 20.9.
 3. Apply all Supabase migrations. Do not apply the fictional seed file to production.
-4. Add `NEXT_PUBLIC_SITE_URL`, `NEXT_PUBLIC_SUPABASE_URL`, `NEXT_PUBLIC_SUPABASE_ANON_KEY`, and an optional `NEXT_PUBLIC_CONTACT_EMAIL` in Vercel. Add the optional founder profile and Google verification values from `.env.example` when ready. The site URL must be the final canonical origin.
+4. Add `NEXT_PUBLIC_SITE_URL`, `NEXT_PUBLIC_SUPABASE_URL`, `NEXT_PUBLIC_SUPABASE_ANON_KEY`, and an optional `NEXT_PUBLIC_CONTACT_EMAIL` in Vercel. Add the optional founder profile, newsletter, and Google verification values from `.env.example` when ready. The site URL must be the final canonical origin.
 5. Set the matching Site URL and permitted redirect origins in Supabase Authentication.
 6. Deploy, then verify public pages, administrator redirection, metadata routes, security headers, and one complete authenticated editing flow. Vercel preview deployments remain no-index even when connected to Supabase.
 

@@ -28,5 +28,5 @@ export async function GET() {
   });
   const csv = [fields.join(","), ...rows].join("\r\n");
   const date = new Date().toISOString().slice(0, 10);
-  return new NextResponse(csv, { headers: { "Content-Disposition": `attachment; filename="mid-atlantic-cre-records-${date}.csv"`, "Content-Type": "text/csv; charset=utf-8", "Cache-Control": "private, no-store" } });
+  return new NextResponse(csv, { headers: { "Content-Disposition": `attachment; filename="capital-parcel-records-${date}.csv"`, "Content-Type": "text/csv; charset=utf-8", "Cache-Control": "private, no-store" } });
 }

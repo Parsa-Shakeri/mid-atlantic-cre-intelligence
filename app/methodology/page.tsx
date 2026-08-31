@@ -4,7 +4,7 @@ import { ArrowRight } from "lucide-react";
 import { Container } from "@/components/ui/container";
 import { PageHero } from "@/components/ui/page-hero";
 
-export const metadata: Metadata = { title: "Methodology", description: "Data collection, verification, calculation methods, and limitations for Mid-Atlantic CRE Intelligence.", alternates: { canonical: "/methodology" } };
+export const metadata: Metadata = { title: "Methodology", description: "Data collection, verification, calculation methods, and limitations for Capital Parcel.", alternates: { canonical: "/methodology" } };
 const methods = [
   ["Geographic coverage", "Maryland, Washington, D.C., and Northern Virginia. Coverage is selective and does not represent every transaction in the region."],
   ["Data collection", "Records will be assembled from public records, government databases, company announcements, credible journalism, regulatory filings, and other attributable public sources."],

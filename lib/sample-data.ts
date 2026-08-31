@@ -34,7 +34,7 @@ export const sampleProperties: PropertyRecord[] = propertyBase.map((property, pr
     reportedCapRate: input[6], reportedNoi: input[7], pricePerSqFt: property.buildingSqFt ? Math.round((input[3] / property.buildingSqFt) * 100) / 100 : null,
     transactionType: input[8], notes: "Fictional sample transaction for development only.", verificationStatus: input[9], dateVerified: input[10], createdAt, isSample: true,
   })),
-  sources: [{ id: `30000000-0000-4000-8000-00000000000${propertyIndex + 1}`, sourceName: "Fictional Development Source", sourceUrl: "https://example.com/fictional-sample", publicationDate: null, accessedDate: "2026-01-15", sourceType: "Sample record", notes: "Placeholder citation. Not evidence of a real transaction.", isSample: true }],
+  sources: [{ id: `30000000-0000-4000-8000-00000000000${propertyIndex + 1}`, propertyId: property.id, transactionId: null, sourceName: "Fictional Development Source", sourceUrl: "https://example.com/fictional-sample", publicationDate: null, accessedDate: "2026-01-15", sourceType: "Sample record", notes: "Placeholder citation. Not evidence of a real transaction.", isSample: true }],
 }));
 
 export const samplePropertyList: PropertyListItem[] = sampleProperties.flatMap((property) => property.transactions.map((transaction) => ({
@@ -43,6 +43,7 @@ export const samplePropertyList: PropertyListItem[] = sampleProperties.flatMap((
   propertyType: property.propertyType, buildingSqFt: property.buildingSqFt, majorTenants: property.majorTenants,
   saleDate: transaction.saleDate, salePrice: transaction.salePrice, buyer: transaction.buyer, seller: transaction.seller,
   reportedCapRate: transaction.reportedCapRate, reportedNoi: transaction.reportedNoi, pricePerSqFt: transaction.pricePerSqFt,
+  pricePerSqFtBasis: transaction.pricePerSqFt === null ? undefined : "Calculated", sourceCount: property.sources.length,
   transactionType: transaction.transactionType, verificationStatus: transaction.verificationStatus, dateVerified: transaction.dateVerified,
   dateAdded: transaction.createdAt, isSample: true,
 })));

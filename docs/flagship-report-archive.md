@@ -5,7 +5,7 @@
 ## Publication record
 
 - Category: Market Reports
-- Author: Mid-Atlantic CRE Intelligence Research Desk
+- Author: Capital Parcel Research Desk
 - Published: July 31, 2026
 - Reading time: 8 minutes
 - Research record: 16 citations
@@ -31,7 +31,7 @@ An expanded review of 16 source-linked Mid-Atlantic commercial property sales ac
 
 ## Scope of the expanded monitor
 
-This second edition reviews all 16 verified asset sales stored in the Mid-Atlantic CRE Intelligence database as of August 8, 2026. The transactions are dated from July 29, 2024 through May 22, 2026 and cover selected properties in Maryland, Washington, D.C., and Northern Virginia. Together they represent $1,328,736,001 in recorded consideration. The median sale price is $54,012,500.
+This second edition reviews all 16 verified asset sales stored in the Capital Parcel database as of August 8, 2026. The transactions are dated from July 29, 2024 through May 22, 2026 and cover selected properties in Maryland, Washington, D.C., and Northern Virginia. Together they represent $1,328,736,001 in recorded consideration. The median sale price is $54,012,500.
 
 The larger sample supports a more useful view of sector and geographic concentration than the first six-transaction edition. It still does not represent every regional sale, and it should not be interpreted as a market-wide index, a complete sales-volume series, or an appraisal benchmark.
 

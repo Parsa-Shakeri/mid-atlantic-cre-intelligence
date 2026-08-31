@@ -1,6 +1,6 @@
 # Contributing
 
-Mid-Atlantic CRE Intelligence is a source-first research project. Contributions should improve traceability, clarity, accessibility, or maintainability without overstating what public evidence supports.
+Capital Parcel is a source-first research project. Contributions should improve traceability, clarity, accessibility, or maintainability without overstating what public evidence supports.
 
 ## Data and research standards
 

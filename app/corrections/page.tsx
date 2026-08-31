@@ -6,7 +6,7 @@ import { PageHero } from "@/components/ui/page-hero";
 
 export const metadata: Metadata = {
   title: "Corrections & Feedback",
-  description: "Request an evidence review, report a website problem, or disclose a security issue to Mid-Atlantic CRE Intelligence.",
+  description: "Request an evidence review, report a website problem, or disclose a security issue to Capital Parcel.",
   alternates: { canonical: "/corrections" },
 };
 

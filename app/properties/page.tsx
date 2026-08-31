@@ -10,7 +10,7 @@ import { getProperties, getPropertyFilterOptions } from "@/lib/data/properties";
 import { buildPageHref, parsePropertyQuery } from "@/lib/property-utils";
 import { getSiteUrl } from "@/lib/site-url";
 
-export const metadata: Metadata = { title: "Property Database", description: "Search and filter sourced commercial property transaction records across the Mid-Atlantic region.", alternates: { canonical: "/properties" } };
+export const metadata: Metadata = { title: "Property Database", description: "Search and filter source-backed commercial property transaction records across the Capital Region.", alternates: { canonical: "/properties" } };
 type PageProps = { searchParams: Promise<Record<string, string | string[] | undefined>> };
 
 export default async function PropertiesPage({ searchParams }: PageProps) {
@@ -39,7 +39,7 @@ export default async function PropertiesPage({ searchParams }: PageProps) {
     "@context": "https://schema.org",
     "@type": "Dataset",
     "@id": `${siteUrl}/properties#dataset`,
-    name: "Mid-Atlantic Commercial Real Estate Transaction Database",
+    name: "Capital Parcel Commercial Property Transaction Database",
     description: "A source-linked research dataset of selected commercial property transactions across Maryland, Washington, D.C., and Northern Virginia.",
     url: `${siteUrl}/properties`,
     creator: { "@id": `${siteUrl}/#organization` },

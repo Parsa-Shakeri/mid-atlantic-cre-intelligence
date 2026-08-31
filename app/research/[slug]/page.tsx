@@ -4,7 +4,8 @@ import { ArrowUpRight, Building2, ExternalLink, FileText, ShieldAlert } from "lu
 import { notFound } from "next/navigation";
 import { ArticleCard } from "@/components/research/article-card";
 import { ArticleExhibit } from "@/components/research/article-exhibit";
-import { ArticleMobileContents, PrintArticleButton, type ArticleSectionLink } from "@/components/research/article-tools";
+import { ArticleMobileContents, PrintArticleButton, ShareArticleButton, type ArticleSectionLink } from "@/components/research/article-tools";
+import { ResearchUpdatesCta } from "@/components/site/research-updates-cta";
 import { Container } from "@/components/ui/container";
 import { getResearchArticleBySlug } from "@/lib/data/research";
 import { getMarkdownSectionId, parseMarkdownSections } from "@/lib/markdown";
@@ -27,7 +28,7 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
     description: article.summary,
     alternates: { canonical: `/research/${article.slug}` },
     robots: article.isSample ? { index: false, follow: false } : undefined,
-    openGraph: { type: "article", title: article.title, description: article.summary, url: `/research/${article.slug}`, publishedTime: article.publicationDate, authors: [article.author], section: article.category, images: [{ url: "/og.png", width: 1732, height: 996, alt: "Mid-Atlantic CRE Intelligence" }] },
+    openGraph: { type: "article", title: article.title, description: article.summary, url: `/research/${article.slug}`, publishedTime: article.publicationDate, authors: [article.author], section: article.category },
   };
 }
 
@@ -53,7 +54,7 @@ export default async function ResearchArticlePage({ params }: PageProps) {
     datePublished: article.publicationDate,
     dateModified: article.updatedAt,
     author: { "@type": "Person", name: article.author },
-    publisher: { "@type": "Organization", name: "Mid-Atlantic CRE Intelligence", url: siteUrl },
+    publisher: { "@type": "Organization", name: "Capital Parcel", url: siteUrl },
     mainEntityOfPage: `${siteUrl}/research/${article.slug}`,
     articleSection: article.category,
     isAccessibleForFree: true,
@@ -81,7 +82,7 @@ export default async function ResearchArticlePage({ params }: PageProps) {
         </Container>
       </header>
 
-      <ArticleMobileContents sections={sectionLinks} />
+      <ArticleMobileContents sections={sectionLinks} title={article.title} />
 
       <Container className="grid items-start gap-14 py-14 lg:grid-cols-[minmax(0,780px)_270px] lg:justify-between lg:py-20">
         <div className="min-w-0">
@@ -109,9 +110,10 @@ export default async function ResearchArticlePage({ params }: PageProps) {
           {article.relatedProperties.length ? <section className="mt-16 border-t border-line pt-8"><p className="eyebrow">Related properties</p><h2 className="mt-3 font-serif text-3xl font-semibold text-navy">Records referenced by this report</h2><div className="mt-7 grid gap-4 sm:grid-cols-2">{article.relatedProperties.map((property) => <Link className="group panel block p-5 transition-[transform,border-color] hover:-translate-y-1 hover:border-navy/30" href={`/properties/${property.slug}`} key={property.id}><div className="flex items-start justify-between gap-3"><Building2 aria-hidden="true" className="size-5 shrink-0 text-accent" />{property.isSample ? <span className="tag">Sample</span> : null}</div><h3 className="mt-5 font-serif text-xl font-semibold leading-tight text-navy">{property.propertyName}</h3><div className="mt-5 flex items-center justify-between border-t border-line pt-4"><p className="text-[10px] font-semibold uppercase tracking-[0.1em] text-slate">{property.city}, {property.state} · {property.propertyType}</p><ArrowUpRight aria-hidden="true" className="size-4 text-accent transition-transform group-hover:-translate-y-0.5 group-hover:translate-x-0.5" /></div></Link>)}</div></section> : null}
 
           {article.relatedArticles.length ? <section className="mt-16 border-t border-line pt-8"><p className="eyebrow">Continue reading</p><h2 className="mt-3 font-serif text-3xl font-semibold text-navy">Related research</h2><div className="mt-6 grid gap-x-7 sm:grid-cols-2">{article.relatedArticles.map((related, index) => <ArticleCard article={related} compact index={index} key={related.id} />)}</div></section> : null}
+          <div className="print-hidden mt-16"><ResearchUpdatesCta /></div>
         </div>
 
-        <aside className="article-sidebar print-hidden hidden lg:block"><div className="sticky top-32 border-l border-line pl-6"><p className="eyebrow">In this report</p><nav className="mt-5 grid text-sm" aria-label="Article sections">{sectionLinks.map((section, index) => <a className="group flex items-baseline gap-3 border-b border-line py-3 text-slate transition-colors hover:text-navy" href={`#${section.id}`} key={section.id}><span aria-hidden="true" className="font-mono text-[9px] text-accent">{String(index + 1).padStart(2, "0")}</span><span>{section.label}</span></a>)}</nav><div className="mt-7 grid gap-3"><PrintArticleButton className="w-full" /><Link className="inline-flex min-h-11 items-center justify-center gap-2 border border-line px-4 text-xs font-semibold text-navy transition-colors hover:border-navy" href="/methodology">Review methodology <ArrowUpRight aria-hidden="true" className="size-3.5" /></Link></div><div className="mt-7 border-t border-line pt-5"><p className="text-xs leading-5 text-slate">{article.isSample ? "This report is fictional demonstration content. Any exhibit values are explicitly hypothetical." : "Read this report alongside its source record and stated limitations."}</p></div></div></aside>
+        <aside className="article-sidebar print-hidden hidden lg:block"><div className="sticky top-32 border-l border-line pl-6"><p className="eyebrow">In this report</p><nav className="mt-5 grid text-sm" aria-label="Article sections">{sectionLinks.map((section, index) => <a className="group flex items-baseline gap-3 border-b border-line py-3 text-slate transition-colors hover:text-navy" href={`#${section.id}`} key={section.id}><span aria-hidden="true" className="font-mono text-[9px] text-accent">{String(index + 1).padStart(2, "0")}</span><span>{section.label}</span></a>)}</nav><div className="mt-7 grid gap-3"><PrintArticleButton className="w-full" /><ShareArticleButton className="w-full" title={article.title} /><Link className="inline-flex min-h-11 items-center justify-center gap-2 border border-line px-4 text-xs font-semibold text-navy transition-colors hover:border-navy" href="/methodology">Review methodology <ArrowUpRight aria-hidden="true" className="size-3.5" /></Link></div><div className="mt-7 border-t border-line pt-5"><p className="text-xs leading-5 text-slate">{article.isSample ? "This report is fictional demonstration content. Any exhibit values are explicitly hypothetical." : "Read this report alongside its source record and stated limitations."}</p></div></div></aside>
       </Container>
     </article>
   </>;

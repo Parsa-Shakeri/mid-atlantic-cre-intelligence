@@ -11,6 +11,8 @@ describe("isNavItemActive", () => {
     expect(isNavItemActive("/properties/barcroft-plaza", "/properties")).toBe(true);
     expect(isNavItemActive("/research/market-monitor", "/research")).toBe(true);
     expect(isNavItemActive("/project", "/project")).toBe(true);
+    expect(isNavItemActive("/comparables?state=MD", "/comparables")).toBe(false);
+    expect(isNavItemActive("/comparables", "/comparables")).toBe(true);
   });
 
   it("does not match routes that merely share a prefix", () => {

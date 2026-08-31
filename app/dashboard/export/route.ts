@@ -10,5 +10,5 @@ export async function GET(request: Request) {
   const data = await getDashboardData(filters);
   const csv = dashboardDataToCsv(data);
   const date = new Date().toISOString().slice(0, 10);
-  return new NextResponse(csv, { headers: { "Content-Disposition": `attachment; filename="mid-atlantic-cre-dashboard-${date}.csv"`, "Content-Type": "text/csv; charset=utf-8", "Cache-Control": "public, max-age=60, stale-while-revalidate=300" } });
+  return new NextResponse(csv, { headers: { "Content-Disposition": `attachment; filename="capital-parcel-dashboard-${date}.csv"`, "Content-Type": "text/csv; charset=utf-8", "Cache-Control": "public, max-age=60, stale-while-revalidate=300" } });
 }

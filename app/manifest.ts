@@ -2,9 +2,9 @@ import type { MetadataRoute } from "next";
 
 export default function manifest(): MetadataRoute.Manifest {
   return {
-    name: "Mid-Atlantic CRE Intelligence",
-    short_name: "MACRE Intelligence",
-    description: "Independent student research on Mid-Atlantic commercial real estate.",
+    name: "Capital Parcel",
+    short_name: "Capital Parcel",
+    description: "Independent commercial property research for the Capital Region.",
     start_url: "/",
     display: "standalone",
     background_color: "#fbfaf7",

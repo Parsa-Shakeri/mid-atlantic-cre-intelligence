@@ -6,7 +6,7 @@ import { PageHero } from "@/components/ui/page-hero";
 
 export const metadata: Metadata = {
   title: "Changelog",
-  description: "Material data, research, methodology, and product updates to Mid-Atlantic CRE Intelligence.",
+  description: "Material data, research, methodology, and product updates to Capital Parcel.",
   alternates: { canonical: "/changelog" },
 };
 

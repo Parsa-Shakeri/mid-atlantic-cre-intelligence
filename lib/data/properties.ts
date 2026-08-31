@@ -10,7 +10,7 @@ type PropertyRow = Database["public"]["Tables"]["properties"]["Row"];
 type TransactionRow = Database["public"]["Tables"]["transactions"]["Row"];
 type SourceRow = Database["public"]["Tables"]["sources"]["Row"];
 
-function mapListRow(row: ListRow): PropertyListItem | null {
+export function mapPropertyListRow(row: ListRow): PropertyListItem | null {
   if (!row.property_id || !row.transaction_id || !row.slug || !row.property_name || !row.street_address || !row.city || !row.state || !row.zip_code || !row.county || !row.property_type || !row.sale_date || row.sale_price === null || !row.transaction_type || !row.verification_status || !row.date_added) return null;
   return {
     propertyId: row.property_id, transactionId: row.transaction_id, slug: row.slug, propertyName: row.property_name,
@@ -30,14 +30,15 @@ function fallbackProperties(query: PropertyQuery): PaginatedProperties {
 
 const sampleFilterOptions = buildPropertyFilterOptions(samplePropertyList);
 
-export async function getPropertyFilterOptions(): Promise<PropertyFilterOptions> {
+export async function getPropertyFilterOptions(includeSamples = true): Promise<PropertyFilterOptions> {
   const client = createPublicSupabaseClient();
   if (!client) return sampleFilterOptions;
 
-  const { data, error } = await client
+  let request = client
     .from("property_transaction_records")
-    .select("city, county, sale_date")
-    .limit(5000);
+    .select("city, county, sale_date");
+  if (!includeSamples) request = request.eq("is_sample", false);
+  const { data, error } = await request.limit(5000);
 
   if (error) return { counties: [], cities: [], saleYears: [] };
 
@@ -68,7 +69,7 @@ export async function getProperties(query: PropertyQuery): Promise<PaginatedProp
   const start = (query.page - 1) * query.pageSize;
   const { data, count, error } = await request.order(query.sort, { ascending: query.direction === "asc", nullsFirst: false }).range(start, start + query.pageSize - 1);
   if (error) return { records: [], total: 0, page: query.page, pageSize: query.pageSize, source: "unavailable" };
-  return { records: (data ?? []).map(mapListRow).filter((item): item is PropertyListItem => item !== null), total: count ?? 0, page: query.page, pageSize: query.pageSize, source: "supabase" };
+  return { records: (data ?? []).map(mapPropertyListRow).filter((item): item is PropertyListItem => item !== null), total: count ?? 0, page: query.page, pageSize: query.pageSize, source: "supabase" };
 }
 
 function mapTransaction(row: TransactionRow): TransactionRecord {
@@ -78,7 +79,7 @@ function mapTransaction(row: TransactionRow): TransactionRecord {
 }
 
 function mapSource(row: SourceRow): SourceRecord {
-  return { id: row.id, sourceName: row.source_name, sourceUrl: row.source_url, publicationDate: row.publication_date,
+  return { id: row.id, propertyId: row.property_id, transactionId: row.transaction_id, sourceName: row.source_name, sourceUrl: row.source_url, publicationDate: row.publication_date,
     accessedDate: row.accessed_date, sourceType: row.source_type, notes: row.notes, isSample: row.is_sample };
 }
 
@@ -96,10 +97,11 @@ export async function getPropertyBySlug(slug: string): Promise<PropertyRecord | 
   if (!client) return sampleProperties.find((property) => property.slug === slug) ?? null;
   const { data: property, error } = await client.from("properties").select("*").eq("slug", slug).maybeSingle();
   if (error || !property) return null;
-  const [transactionsResult, sourcesResult] = await Promise.all([
-    client.from("transactions").select("*").eq("property_id", property.id).order("sale_date", { ascending: false }),
-    client.from("sources").select("*").eq("property_id", property.id).order("accessed_date", { ascending: false }),
-  ]);
+  const transactionsResult = await client.from("transactions").select("*").eq("property_id", property.id).order("sale_date", { ascending: false });
+  const transactionIds = (transactionsResult.data ?? []).map((transaction) => transaction.id);
+  const sourceFilters = [`property_id.eq.${property.id}`];
+  if (transactionIds.length) sourceFilters.push(`transaction_id.in.(${transactionIds.join(",")})`);
+  const sourcesResult = await client.from("sources").select("*").or(sourceFilters.join(",")).order("accessed_date", { ascending: false });
   return mapProperty(property, transactionsResult.data ?? [], sourcesResult.data ?? []);
 }
 
@@ -116,5 +118,5 @@ export async function getRecentTransactions(limit = 5): Promise<PropertyListItem
   if (!client) return samplePropertyList.toSorted((a, b) => b.saleDate.localeCompare(a.saleDate)).slice(0, limit);
   const { data, error } = await client.from("property_transaction_records").select("*").order("sale_date", { ascending: false }).limit(limit);
   if (error) return [];
-  return (data ?? []).map(mapListRow).filter((item): item is PropertyListItem => item !== null);
+  return (data ?? []).map(mapPropertyListRow).filter((item): item is PropertyListItem => item !== null);
 }

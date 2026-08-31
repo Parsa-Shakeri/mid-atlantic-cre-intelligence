@@ -1,6 +1,6 @@
 # Security Policy
 
-Mid-Atlantic CRE Intelligence is a continuously deployed student research project. Only the current production version on the `main` branch is supported with security updates.
+Capital Parcel is a continuously deployed student research project. Only the current production version on the `main` branch is supported with security updates.
 
 ## Report a vulnerability privately
 
@@ -27,4 +27,3 @@ Testing must not degrade service, access another person's account, change produc
 Please allow time for a fix before public disclosure. No bug bounty or monetary reward is offered.
 
 Published-data disagreements, missing sources, and calculation questions are not security vulnerabilities. Submit those through the repository's **Data correction or source update** issue form.
-

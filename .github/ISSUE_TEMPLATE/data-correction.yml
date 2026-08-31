@@ -13,7 +13,7 @@ body:
     id: record_url
     attributes:
       label: Affected page
-      description: Paste the full Mid-Atlantic CRE Intelligence URL containing the value.
+      description: Paste the full Capital Parcel URL containing the value.
       placeholder: https://mid-atlantic-cre-intelligence.vercel.app/properties/example
     validations:
       required: true
@@ -90,4 +90,3 @@ body:
     attributes:
       label: Additional context
       description: Add concise context that would help reproduce or evaluate the discrepancy.
-

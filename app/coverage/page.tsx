@@ -14,7 +14,7 @@ export const revalidate = 3600;
 
 export const metadata: Metadata = {
   title: "Data Coverage",
-  description: "Measured geographic, sector, sourcing, verification, and field-level coverage for the public Mid-Atlantic CRE Intelligence database.",
+  description: "Measured geographic, sector, sourcing, verification, and field-level coverage for the public Capital Parcel database.",
   alternates: { canonical: "/coverage" },
 };
 
@@ -51,7 +51,7 @@ export default async function CoveragePage() {
     "@context": "https://schema.org",
     "@type": "Dataset",
     "@id": `${siteUrl}/coverage#dataset`,
-    name: "Mid-Atlantic CRE Intelligence public database coverage",
+    name: "Capital Parcel public database coverage",
     url: `${siteUrl}/coverage`,
     description: metadata.description,
     dateModified: data.latestUpdatedAt ?? undefined,
@@ -109,7 +109,7 @@ export default async function CoveragePage() {
           <section className="mt-20 grid gap-10 border-t-2 border-navy pt-9 lg:grid-cols-[0.62fr_1fr]" aria-labelledby="gaps-title"><div><p className="eyebrow">Known gaps</p><h2 className="mt-3 font-serif text-4xl font-semibold text-navy" id="gaps-title">Where the public record is thinnest</h2><p className="mt-5 max-w-md text-sm leading-7 text-slate">These are internal completeness gaps, not estimates of missing transactions across the region.</p></div><div>{gaps.length ? <ul className="grid gap-4">{gaps.map((gap) => <li className="panel flex items-center justify-between gap-5 p-5" key={gap.key}><div><p className="font-semibold text-navy">{gap.label}</p><p className="mt-1 text-xs text-slate">{formatNumber(gap.missingCount)} of {formatNumber(gap.totalCount)} {gap.scope} unavailable</p></div><span className="font-serif text-2xl font-semibold text-accent">{percent(gap.missingRate)}</span></li>)}</ul> : <p className="panel p-6 text-sm leading-7 text-slate">No missing values were detected in the measured fields.</p>}<div className="mt-6 flex flex-wrap gap-3"><Link className="button-primary gap-2" href="/properties">Inspect records <ArrowRight aria-hidden="true" className="size-4" /></Link><Link className="button-secondary" href="/corrections">Report a discrepancy</Link></div></div></section>
         </>}
 
-        <section className="mt-16 border border-line bg-mist/60 p-6 sm:p-8"><p className="eyebrow">Scope note</p><p className="mt-4 max-w-4xl text-sm leading-7 text-slate">This scorecard measures the contents of Mid-Atlantic CRE Intelligence only. It does not compare the database with an authoritative universe of regional transactions and therefore cannot state the percentage of the market captured. Each table is limited to {formatNumber(data.queryLimit)} records; a visible warning appears if that ceiling is reached.</p></section>
+        <section className="mt-16 border border-line bg-mist/60 p-6 sm:p-8"><p className="eyebrow">Scope note</p><p className="mt-4 max-w-4xl text-sm leading-7 text-slate">This scorecard measures the contents of Capital Parcel only. It does not compare the database with an authoritative universe of regional transactions and therefore cannot state the percentage of the market captured. Each table is limited to {formatNumber(data.queryLimit)} records; a visible warning appears if that ceiling is reached.</p></section>
       </>}
     </Container>
   </>;

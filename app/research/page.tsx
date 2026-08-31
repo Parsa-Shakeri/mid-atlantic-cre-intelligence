@@ -6,6 +6,7 @@ import { Container } from "@/components/ui/container";
 import { PageHero } from "@/components/ui/page-hero";
 import { PublicDataUnavailable } from "@/components/ui/public-data-unavailable";
 import { SectionHeading } from "@/components/ui/section-heading";
+import { ResearchUpdatesCta } from "@/components/site/research-updates-cta";
 import { getResearchArticles } from "@/lib/data/research";
 import { isResearchCategory } from "@/lib/research-data";
 import { formatDate } from "@/lib/sample-data";
@@ -77,6 +78,7 @@ export default async function ResearchPage({ searchParams }: PageProps) {
           {filtered.length ? <div>{filtered.map((article, index) => <ArticleCard article={article} index={index} key={article.id} />)}</div> : <div className="panel mt-8 p-10 text-center" role="status"><BookOpen aria-hidden="true" className="mx-auto size-6 text-accent" /><p className="mt-5 font-serif text-2xl font-semibold text-navy">No reports in this category yet</p><p className="mx-auto mt-2 max-w-lg text-sm leading-6 text-slate">The empty category remains visible rather than being filled with placeholder claims. Choose another category to continue browsing.</p><Link className="button-secondary mt-6" href="/research">View all research</Link></div>}
         </section>
       </div>
+      <div className="mt-16"><ResearchUpdatesCta /></div>
     </Container> : null}
   </>;
 }
